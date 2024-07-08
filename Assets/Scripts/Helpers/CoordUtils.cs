@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class GeoCord {
+public class CoordUtils {
 
 	public static GameObject text;
 	public static GameObject sphere;
@@ -10,10 +10,10 @@ public class GeoCord {
 		double lat = (tile.BBOX[2] + tile.BBOX[0]) / 2;
 
 		return GetPositionFromLatitudeLongitude((float)lat,(float)lon);
-		//return new Vector3( sin1 * cos2, cos1, sin1 * sin2 ) * 5; // 5 del radio
-	}
+        //return new Vector3( sin1 * cos2, cos1, sin1 * sin2 ) * UVSphereGenerator.radiusStatic;
+    }
 
-	public static void CreateText(Vector3 vertexPosition){
+    public static void CreateText(Vector3 vertexPosition){
 		text = GameObject.FindGameObjectWithTag ("clone");
 		sphere = GameObject.FindGameObjectWithTag ("Player");
 		GameObject.Instantiate (text, sphere.transform.position + vertexPosition, Quaternion.identity);
@@ -52,43 +52,26 @@ public class GeoCord {
 		float r = UVSphereGenerator.radiusStatic;
 
 		Vector3 result = new Vector3 (Mathf.Cos(Mathf.Deg2Rad * latitude) * Mathf.Cos(Mathf.Deg2Rad * longitude),
-									  Mathf.Sin(Mathf.Deg2Rad * latitude), 
+			Mathf.Sin(Mathf.Deg2Rad * latitude), 
 			Mathf.Cos(Mathf.Deg2Rad * latitude) * Mathf.Sin(Mathf.Deg2Rad * longitude)) * r;  // el par (y,z) está en orden diferente
-		Debug.Log((Mathf.Cos(Mathf.Deg2Rad * latitude) * Mathf.Sin(Mathf.Deg2Rad * longitude)) * r);
-		//Debug.Log ("Lat: " + latitude + " // Long: " + longitude + " // Result: " + result + " // Method: La -> " + GetLatitudeFromPosition(result) + " // Lo -> " + GetLongitudeFromPosition(result));
 		//CreateText (result);
 		return result;
 	}
 
 	public static Vector3d GetPositionFromLatitudeLongitude(double latitude, double longitude)
 	{
-		//double r = UVSphereGenerator.radiusStatic;
 		double r = UVSphereGenerator.radiusStatic;
 
-		/*
-		 *  double theta = (double)(2.0d * Mathd.PI) * ((double)(j + 1) / longitudeLines);
-			double cosTheta = Mathd.Cos(theta);
-			double sinTheta = Mathd.Sin(theta);
-		 */
-
-
-		// Parece que tenía la función al revés en y,z
 		Vector3d result = new Vector3d(Mathd.Cos(Mathd.Deg2Rad * latitude) * Mathd.Cos(Mathd.Deg2Rad * longitude),
-			Mathd.Cos(Mathd.Deg2Rad * latitude) * Mathd.Sin(Mathd.Deg2Rad * longitude),
-									  Mathd.Sin(Mathd.Deg2Rad * latitude)) * r;
-		/*Vector3d result = new Vector3d(Mathd.Cos(Mathd.Deg2Rad * latitude) * Mathd.Cos(Mathd.Deg2Rad * longitude),
-									  Mathd.Sin(Mathd.Deg2Rad * latitude),
-			Mathd.Cos(Mathd.Deg2Rad * latitude) * Mathd.Sin(Mathd.Deg2Rad * longitude)) * r;*/  // el par (y,z) está en orden diferente
+            Mathd.Sin(Mathd.Deg2Rad * latitude),
+            Mathd.Cos(Mathd.Deg2Rad * latitude) * Mathd.Sin(Mathd.Deg2Rad * longitude)) * r; // el par (y,z) está en orden diferente
 		return result;
 	}
+
 	/*public static float GetHeightFromPosition(Vector3 pos){
 		float longitude = GetLongitudeFromPosition (pos);
 		float latitude = GetLatitudeFromPosition (pos);
 
 		return GetPositionFromLatitudeLongitude(longitude, latitude).magnitude;
 	}*/
-
-	public static void GetNextVertexLatitude(Vector3 pos){
-		Debug.Log ("value: " + pos);
-	}
 }

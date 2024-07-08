@@ -380,18 +380,18 @@ public class UVSphereGenerator : MonoBehaviour {
 		Vector3 vertex10 = middleMesh.vertices[Mathf.Max(0, (UVSphereGenerator.nbLong/4 + 1) * (UVSphereGenerator.nbLat/2))];
 		Vector3 vertex11 = middleMesh.vertices[Mathf.Max((UVSphereGenerator.nbLong/4), middleMesh.vertices.Length - 1)];*/
 
-		float value00 = Mathf.Min(GeoCord.GetLatitudeFromPosition (middleMesh.vertices[0]), GeoCord.GetLatitudeFromPosition (middleMesh.vertices[middleMesh.vertices.Length - 1]));
-		float value01 = Mathf.Min(GeoCord.GetLongitudeFromPosition (middleMesh.vertices[0]), GeoCord.GetLongitudeFromPosition (middleMesh.vertices[middleMesh.vertices.Length - 1]));
-		float value10 = Mathf.Max(GeoCord.GetLatitudeFromPosition (middleMesh.vertices[0]), GeoCord.GetLatitudeFromPosition (middleMesh.vertices[middleMesh.vertices.Length - 1]));
-		float value11 = Mathf.Max(GeoCord.GetLongitudeFromPosition (middleMesh.vertices[0]), GeoCord.GetLongitudeFromPosition (middleMesh.vertices[middleMesh.vertices.Length - 1]));
+		float value00 = Mathf.Min(CoordUtils.GetLatitudeFromPosition (middleMesh.vertices[0]), CoordUtils.GetLatitudeFromPosition (middleMesh.vertices[middleMesh.vertices.Length - 1]));
+		float value01 = Mathf.Min(CoordUtils.GetLongitudeFromPosition (middleMesh.vertices[0]), CoordUtils.GetLongitudeFromPosition (middleMesh.vertices[middleMesh.vertices.Length - 1]));
+		float value10 = Mathf.Max(CoordUtils.GetLatitudeFromPosition (middleMesh.vertices[0]), CoordUtils.GetLatitudeFromPosition (middleMesh.vertices[middleMesh.vertices.Length - 1]));
+		float value11 = Mathf.Max(CoordUtils.GetLongitudeFromPosition (middleMesh.vertices[0]), CoordUtils.GetLongitudeFromPosition (middleMesh.vertices[middleMesh.vertices.Length - 1]));
 		if (longTile == 1) { // In the limit between longitude 180 and longitude -180, always takes -180, we need a positive value for half cases
 			float tempVal = value01;
 			value01 = value11;
 			value11 = -tempVal;
 		}
 
-		//GeoCord.CreateText (middleMesh.vertices [0]);
-		GeoCord.GetPositionFromLatitudeLongitude(value00, value01);
+        //GeoCord.CreateText (middleMesh.vertices [0]);
+        CoordUtils.GetPositionFromLatitudeLongitude(value00, value01);
 		middleTile.GetComponent<Tile> ().BBOX = new double[]{value00, value01, value10, value11}; // ymin, xmin, ymax, xmax
 
 		yield return 0;

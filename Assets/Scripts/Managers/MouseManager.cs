@@ -35,8 +35,8 @@ public class MouseManager : MonoBehaviour
                     bool markerImpact2 = Physics.Raycast(mouseClickRay, out RaycastHit raycastHit2, Mathf.Infinity);
                     if (markerImpact2)
                     {
-                        float lon = GeoCord.GetLongitudeFromPosition(raycastHit2.point);
-                        float lat = GeoCord.GetLatitudeFromPosition(raycastHit2.point);
+                        float lon = CoordUtils.GetLongitudeFromPosition(raycastHit2.point);
+                        float lat = CoordUtils.GetLatitudeFromPosition(raycastHit2.point);
                         Marker marker = new(lat, lon);
                         buttonPressed = false;
                     }

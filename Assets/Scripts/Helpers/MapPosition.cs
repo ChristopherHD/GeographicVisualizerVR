@@ -41,8 +41,8 @@ public class MapPosition
         position = new Vector3d(localToWorld.MultiplyPoint3x4(worldRotationPosition));
         //Debug.Log("-- " + position);
         this.worldPosition = position;
-        this.latitude = GeoCord.GetLatitudeFromPosition(position);
-        this.longitude = GeoCord.GetLongitudeFromPosition(position);
+        this.latitude = CoordUtils.GetLatitudeFromPosition(position);
+        this.longitude = CoordUtils.GetLongitudeFromPosition(position);
         /*Debug.Log("lat: " + latitude);
         Debug.Log("lon: " + longitude);*/
     }

@@ -49,9 +49,9 @@ public class Tile : MonoBehaviour {
 		//	GetVertexPosition(VertexType.UpperLeft) + GetVertexPosition(VertexType.UpperRight)) / 4));
 		centerPoint.worldPosition = new Vector3d((GetVertexPosition(VertexType.DownLeft) + GetVertexPosition(VertexType.DownRight) +
 			GetVertexPosition(VertexType.UpperLeft) + GetVertexPosition(VertexType.UpperRight)) / 4);
-        centerPoint.longitude = GeoCord.GetLongitudeFromPosition((GetVertexPosition(VertexType.DownLeft) + GetVertexPosition(VertexType.DownRight) +
+        centerPoint.longitude = CoordUtils.GetLongitudeFromPosition((GetVertexPosition(VertexType.DownLeft) + GetVertexPosition(VertexType.DownRight) +
 			GetVertexPosition(VertexType.UpperLeft) + GetVertexPosition(VertexType.UpperRight)) / 4);
-		centerPoint.latitude = GeoCord.GetLatitudeFromPosition((GetVertexPosition(VertexType.DownLeft) + GetVertexPosition(VertexType.DownRight) +
+		centerPoint.latitude = CoordUtils.GetLatitudeFromPosition((GetVertexPosition(VertexType.DownLeft) + GetVertexPosition(VertexType.DownRight) +
 			GetVertexPosition(VertexType.UpperLeft) + GetVertexPosition(VertexType.UpperRight)) / 4);
 
 		/*centerPoint.longitude = (BBOX[2] - BBOX[0]) / 2f;
@@ -78,8 +78,8 @@ public class Tile : MonoBehaviour {
         Matrix4x4 localToWorld = worldObject.transform.localToWorldMatrix;
 		Vector3 result = (GetVertexPosition(VertexType.DownLeft) + GetVertexPosition(VertexType.DownRight) + GetVertexPosition(VertexType.UpperLeft) + GetVertexPosition(VertexType.UpperRight)) / 4;
         result = localToWorld.MultiplyPoint3x4(result);
-		centerPoint.longitude = GeoCord.GetLongitudeFromPosition(result);
-		centerPoint.latitude = GeoCord.GetLatitudeFromPosition(result);
+		centerPoint.longitude = CoordUtils.GetLongitudeFromPosition(result);
+		centerPoint.latitude = CoordUtils.GetLatitudeFromPosition(result);
         /*centerPoint.longitude = GeoCord.GetLongitudeFromPosition((GetVertexPosition(VertexType.DownLeft) + GetVertexPosition(VertexType.DownRight) +
             GetVertexPosition(VertexType.UpperLeft) + GetVertexPosition(VertexType.UpperRight)) / 4);
         centerPoint.latitude = GeoCord.GetLatitudeFromPosition((GetVertexPosition(VertexType.DownLeft) + GetVertexPosition(VertexType.DownRight) +

@@ -47,7 +47,7 @@ public class LineObject : MonoBehaviour
         }
         lineRenderer.SetPositions(linePositions.ToArray());
         Vector3 directionMiddlePoint = this.originalMiddlePoint.normalized;
-        this.transform.position = raycastHitMiddlePointPosition + directionMiddlePoint / 250 + 50 * CameraDistanceModifierFunction(mainCamera.transform.position.magnitude) * directionMiddlePoint;
+        this.transform.position = raycastHitMiddlePointPosition + directionMiddlePoint / 250 + 100 * CameraDistanceModifierFunction(mainCamera.transform.position.magnitude) * directionMiddlePoint;
     }
 
     private float CameraDistanceModifierFunction(float distance)

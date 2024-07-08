@@ -26,8 +26,6 @@ public class Marker
 
     public void CreateWorldObject()
     {
-        //markerObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        //UnityEngine.Object.Destroy(markerObject.GetComponent<BoxCollider>());
         markerObject = new GameObject();
         markerObject.layer = LayerMask.NameToLayer("Marker");
         markerObject.AddComponent<MarkerObject>();
@@ -37,7 +35,7 @@ public class Marker
         markerObject.transform.position = this.worldPosition;
         markerObject.transform.localScale = Vector3.zero; // it'll scale inmediatly after
         SphereCollider collider = markerObject.AddComponent<SphereCollider>();
-        collider.radius = 1;
+        collider.radius = 1.3f;
     }
 
     public void JoinMarker(Marker marker)
@@ -50,7 +48,8 @@ public class Marker
         background.transform.parent = lineObject.transform;
         background.transform.localPosition = Vector3.zero;
         background.GetComponent<MeshRenderer>().material.color = Color.black;
-        background.transform.localScale = new Vector3(40, 10, 1);
+        float textScaleFactor = 1f / 2f;
+        background.transform.localScale = new Vector3(40, 10, 1) * textScaleFactor;
 
         TextMesh text = lineObject.AddComponent<TextMesh>();
         double distance = Distance(marker);
@@ -63,7 +62,7 @@ public class Marker
         text.text = System.Math.Round(distance, 2).ToString() + (isKM ? " Km" : " m");
         text.anchor = TextAnchor.MiddleCenter;
         text.color = Color.white;
-        text.fontSize = 72;
+        text.fontSize = (int) (72 * textScaleFactor);
 
         int linePositions = 2 + (int) (Math.Max(Math.Abs(this.lat - marker.lat), Math.Abs(this.lon - marker.lon)) / 0.5);
         LineObject line = lineObject.AddComponent<LineObject>();
@@ -71,10 +70,9 @@ public class Marker
         lineRenderer.useWorldSpace = true;
         List<Vector3> positions = new List<Vector3>();
 
-        //Vector3 diffPosition = worldPosition - this.markerObject.transform.position;
         for (int i = 0; i <= linePositions ; i++)
-        {
-            //Vector3 pos = this.markerObject.transform.position + i * (marker.markerObject.transform.position - this.markerObject.transform.position) / linePositions;
+        { 
+            // TODO: remove linear way of calculating world positions diference, make it spheric with angular variation, to fix a problem having more vertex in regions closer to the poles
             Vector3 pos = this.worldPosition + i * (marker.worldPosition - this.worldPosition) / linePositions;
             positions.Add(CoordUtils.GetPositionFromLatitudeLongitude(CoordUtils.GetLatitudeFromPosition(pos), CoordUtils.GetLongitudeFromPosition(pos)));
         }
@@ -112,7 +110,6 @@ public class Marker
 
     public void Select()
     {
-        //markerObject.GetComponent<MeshRenderer>().material.color = Color.green;
         markerObject.GetComponent<SpriteRenderer>().color = Color.green;
         if (lastSelectedMarker != null && lastSelectedMarker != this)
         {

@@ -71,13 +71,14 @@ public class Marker
         lineRenderer.useWorldSpace = true;
         List<Vector3> positions = new List<Vector3>();
 
-        Vector3 diffPosition = worldPosition - this.markerObject.transform.position;
+        //Vector3 diffPosition = worldPosition - this.markerObject.transform.position;
         for (int i = 0; i <= linePositions ; i++)
         {
-            Vector3 pos = this.markerObject.transform.position + i * (marker.markerObject.transform.position - this.markerObject.transform.position) / linePositions;
-            positions.Add(-diffPosition + CoordUtils.GetPositionFromLatitudeLongitude(CoordUtils.GetLatitudeFromPosition(pos), CoordUtils.GetLongitudeFromPosition(pos)));
+            //Vector3 pos = this.markerObject.transform.position + i * (marker.markerObject.transform.position - this.markerObject.transform.position) / linePositions;
+            Vector3 pos = this.worldPosition + i * (marker.worldPosition - this.worldPosition) / linePositions;
+            positions.Add(CoordUtils.GetPositionFromLatitudeLongitude(CoordUtils.GetLatitudeFromPosition(pos), CoordUtils.GetLongitudeFromPosition(pos)));
         }
-        Vector3 middlePos = -diffPosition + this.markerObject.transform.position + (marker.markerObject.transform.position - this.markerObject.transform.position) / 2;
+        Vector3 middlePos = this.worldPosition + (marker.worldPosition - this.worldPosition) / 2;
         middlePos = CoordUtils.GetPositionFromLatitudeLongitude(CoordUtils.GetLatitudeFromPosition(middlePos), CoordUtils.GetLongitudeFromPosition(middlePos));
         lineRenderer.positionCount = positions.Count;
         lineRenderer.SetPositions(positions.ToArray());

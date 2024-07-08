@@ -12,7 +12,7 @@ public class LineObject : MonoBehaviour
 
     private static Camera mainCamera;
 
-    private void Start()
+    void Start()
     {
         raycastHitPositions = new Vector3[originalPoints.Length];
         int layerMask = 1 << LayerMask.NameToLayer("Marker");
@@ -28,7 +28,7 @@ public class LineObject : MonoBehaviour
         raycastHitMiddlePointPosition = raycastHitMiddlePoint.point;
     }
 
-    void Update()
+    void LateUpdate()
     {
         RecalculatePositions();
     }
@@ -43,7 +43,7 @@ public class LineObject : MonoBehaviour
             {
                 linePositions.Add(raycastHitPositions[i] + direction / 310 + 50 * CameraDistanceModifierFunction(mainCamera.transform.position.magnitude) * direction);
             }
-            else return; // all points should  collide with world mesh, if not, we shouldn't change the lineRenderer positions
+            else return; // all points should collide with world mesh, if not, we shouldn't change the lineRenderer positions
         }
         lineRenderer.SetPositions(linePositions.ToArray());
         Vector3 directionMiddlePoint = this.originalMiddlePoint.normalized;

@@ -196,8 +196,12 @@ public class UVSphereGenerator : MonoBehaviour {
 		Marker marker1 = new(40.416775f, -3.703790f);
         Marker marker2 = new(39.8581f, -4.02263f);
 		Marker marker3 = new(40.0201959f, -3.6590717f);
+		//Marker marker4 = new(CoordUtils.GetLatitudeFromPosition(new Vector3(6041.34131f, 1010.0802f, -2353.47412f)), CoordUtils.GetLongitudeFromPosition(new Vector3(6041.34131f, 1010.0802f, -2353.47412f)));
+		//Marker marker5 = new(CoordUtils.GetLatitudeFromPosition(new Vector3(2338.03271f, 986.919739f, 6051.27783f)), CoordUtils.GetLongitudeFromPosition(new Vector3(2338.03271f, 986.919739f, 6051.27783f)));
+
         marker1.JoinMarker(marker2);
 		marker2.JoinMarker(marker3);
+		//marker4.JoinMarker(marker5);
     }
 
 	void CreateNorthPoleTile(){

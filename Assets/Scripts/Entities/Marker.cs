@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
 using static UnityEngine.Mathd;
@@ -64,20 +66,39 @@ public class Marker
         text.color = Color.white;
         text.fontSize = (int) (72 * textScaleFactor);
 
-        int linePositions = 2 + (int) (Math.Max(Math.Abs(this.lat - marker.lat), Math.Abs(this.lon - marker.lon)) / 0.5);
+        int linePositions = 2 + (int) (Math.Max(Math.Abs(this.lat - marker.lat), Math.Abs(this.lon - marker.lon)));
         LineObject line = lineObject.AddComponent<LineObject>();
         LineRenderer lineRenderer = lineObject.AddComponent<LineRenderer>();
         lineRenderer.useWorldSpace = true;
         List<Vector3> positions = new List<Vector3>();
 
-        for (int i = 0; i <= linePositions ; i++)
-        { 
-            // TODO: remove linear way of calculating world positions diference, make it spheric with angular variation, to fix a problem having more vertex in regions closer to the poles
-            Vector3 pos = this.worldPosition + i * (marker.worldPosition - this.worldPosition) / linePositions;
-            positions.Add(CoordUtils.GetPositionFromLatitudeLongitude(CoordUtils.GetLatitudeFromPosition(pos), CoordUtils.GetLongitudeFromPosition(pos)));
-        }
         Vector3 middlePos = this.worldPosition + (marker.worldPosition - this.worldPosition) / 2;
         middlePos = CoordUtils.GetPositionFromLatitudeLongitude(CoordUtils.GetLatitudeFromPosition(middlePos), CoordUtils.GetLongitudeFromPosition(middlePos));
+        positions.Add(marker.worldPosition);
+        for (int i = 1; i < linePositions ; i++)
+        {
+            Vector3 direction1 = -this.worldPosition.normalized;
+            Vector3 direction2 = -marker.worldPosition.normalized;
+
+            // Using Mathf.Clamp to fix some NaN values generated with high LoD
+            float angle = Mathf.Rad2Deg * Mathf.Acos(Mathf.Clamp(Vector3.Dot(direction2, direction1), -1, 1)) * i / linePositions;
+            Vector3 axis = Vector3.Cross(direction2, direction1).normalized;
+            Vector3 pos = Quaternion.AngleAxis(angle, axis) * -direction2;
+            pos = CoordUtils.GetPositionFromLatitudeLongitude(CoordUtils.GetLatitudeFromPosition(pos), CoordUtils.GetLongitudeFromPosition(pos));
+            
+            float distance1 = (middlePos - this.worldPosition).magnitude;
+            float distance2 = (middlePos - pos).magnitude;
+            // In some high LoD cases, points are generated further away than they should because of precision things related
+            // with angles too close between the markers, they are not necessary at that LoD anyway, we descart it
+            if (distance2 > distance1)
+            {
+                Debug.Log("Point outside the line, discarting");
+                continue;
+            }
+
+            positions.Add(pos);
+        }
+        positions.Add(this.worldPosition);
         lineRenderer.positionCount = positions.Count;
         lineRenderer.SetPositions(positions.ToArray());
         line.lineRenderer = lineRenderer;

@@ -17,9 +17,6 @@ public class MarkerObject : MonoBehaviour
     {
         if (mainCamera == null) mainCamera = Camera.main;
 
-        //this.gameObject.AddComponent<MeshRenderer>();
-        //this.GetComponent<MeshRenderer>().material.color = Color.blue;
-
         GameObject billboardObject = new GameObject();
         billboardObject.transform.parent = this.transform;
         billboardObject.transform.localPosition = new Vector3(0, 10, 0);
@@ -39,22 +36,11 @@ public class MarkerObject : MonoBehaviour
         renderer.sprite = spriteCircle;
     }
 
-    private void Update()
+    void Update()
     {
         RecalculatePosition();
         float distance = (mainCamera.transform.position - transform.position).magnitude;
         transform.localScale = new Vector3(distance, distance, distance) * markerScaleFactor;
-        foreach (LineObject lineObject in marker.GetJoinedLines()){
-            LineRenderer line = lineObject.lineRenderer;
-            float minDistance = -1;
-            for (int i = 0; i < line.positionCount; i++)
-            {
-                float lineVertexDistance = (mainCamera.transform.position - line.GetPosition(i)).magnitude;
-                if(minDistance < 0 || lineVertexDistance < minDistance) minDistance = lineVertexDistance;
-            }
-            line.widthMultiplier = minDistance * markerScaleFactor;
-            line.transform.localScale = new Vector3(minDistance, minDistance, minDistance) / 200f;
-        }
     }
 
     private float CameraDistanceModifierFunction(float distance)

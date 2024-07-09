@@ -10,7 +10,6 @@ public class CoordUtils {
 		double lat = (tile.BBOX[2] + tile.BBOX[0]) / 2;
 
 		return GetPositionFromLatitudeLongitude((float)lat,(float)lon);
-        //return new Vector3( sin1 * cos2, cos1, sin1 * sin2 ) * UVSphereGenerator.radiusStatic;
     }
 
     public static void CreateText(Vector3 vertexPosition){

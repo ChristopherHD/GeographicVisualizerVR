@@ -6,9 +6,10 @@ using UnityEngine.UI;
 public class MouseManager : MonoBehaviour
 {
     private Boolean buttonPressed = false;
-    private Boolean buttonUp = false;
+    private Boolean buttonReleased = false;
     public Button buttonMarker;
-    private void Start()
+
+    void Start()
     {
         buttonMarker.onClick.AddListener(ManageUIMarker);
     }
@@ -25,9 +26,9 @@ public class MouseManager : MonoBehaviour
                 raycastHit.collider.gameObject.GetComponent<MarkerObject>().marker.Select();
             }
 
-            if(!buttonUp)
+            if(!buttonReleased)
             {
-                buttonUp = true;
+                buttonReleased = true;
             } else
             {
                 if (buttonPressed)
@@ -64,7 +65,7 @@ public class MouseManager : MonoBehaviour
         if (!buttonPressed)
         {
             buttonPressed = true;
-            buttonUp = false;
+            buttonReleased = false;
         }
     }
 }

@@ -47,7 +47,8 @@ public class CoordUtils {
 		return ((Mathf.Rad2Deg * (Mathf.Atan2(z,x))));//Mathf.Rad2Deg * Mathf.Atan (x/z); // atan2 determina el cuadrante, atan solo funciona como si fuese un cuadrante
 	}
 
-	public static Vector3 GetPositionFromLatitudeLongitude(float latitude, float longitude){
+	public static Vector3 GetPositionFromLatitudeLongitude(float latitude, float longitude)
+	{
 		float r = UVSphereGenerator.radiusStatic;
 
 		Vector3 result = new Vector3 (Mathf.Cos(Mathf.Deg2Rad * latitude) * Mathf.Cos(Mathf.Deg2Rad * longitude),
@@ -57,7 +58,7 @@ public class CoordUtils {
 		return result;
 	}
 
-	public static Vector3d GetPositionFromLatitudeLongitude(double latitude, double longitude)
+    public static Vector3d GetPositionFromLatitudeLongitude(double latitude, double longitude)
 	{
 		double r = UVSphereGenerator.radiusStatic;
 

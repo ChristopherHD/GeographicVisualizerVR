@@ -7,8 +7,8 @@ public class Marker
     private float lat;
     private float lon;
     private List<LineObject> joinedLines;
-    Vector3 worldPosition;
-    GameObject markerObject;
+    private Vector3 worldPosition;
+    private GameObject markerObject;
     
     private static GameObject markersContainer = GameObject.Find("Markers");
     private static GameObject linesContainer = GameObject.Find("Lines");
@@ -35,6 +35,7 @@ public class Marker
         markerObject.transform.localScale = Vector3.zero; // it'll scale inmediatly after
         SphereCollider collider = markerObject.AddComponent<SphereCollider>();
         collider.radius = 1.3f;
+        Debug.Log(lat + " :: " + lon);
     }
 
     public void JoinMarker(Marker marker)

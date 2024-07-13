@@ -1182,10 +1182,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   radius: 6374
-  numberLong: 112
-  numberLat: 61
-  longitudeSegments: 200
-  latitudeSegments: 200
+  numberLong: 32
+  numberLat: 28
+  longitudeSegments: 32
+  latitudeSegments: 27
+  polesLatitudeTiles: 1
+  latitudeTileDivisions: 4
+  longitudeTileDivisions: 4
 --- !u!33 &1112682711
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -1259,7 +1262,7 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30

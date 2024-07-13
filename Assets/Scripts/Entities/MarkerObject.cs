@@ -10,6 +10,7 @@ public class MarkerObject : MonoBehaviour
     private Sprite sprite;
     private Sprite spriteCircle;
     private Vector3 tileRayCastHitPosition = Vector3.zero;
+    private float scaleFactor = UVSphereGenerator.radiusStatic / 127.42f;
 
     private static Camera mainCamera;
 
@@ -55,10 +56,12 @@ public class MarkerObject : MonoBehaviour
         {
             int layerMask = 1 << LayerMask.NameToLayer("Marker");
             Physics.Raycast(this.marker.GetWorldPosition(), -direction, out RaycastHit raycastHit, Mathf.Infinity, ~layerMask);
+            //float lat = CoordUtils.GetLatitudeFromPosition(raycastHit.point);
+            //float lon = CoordUtils.GetLongitudeFromPosition(raycastHit.point);
             tileRayCastHitPosition = raycastHit.point;
         } else
         {
-            this.transform.position = tileRayCastHitPosition + direction / 300 + 50 * CameraDistanceModifierFunction(mainCamera.transform.position.magnitude) * direction;
+            this.transform.position = tileRayCastHitPosition + direction / (scaleFactor * 5) + scaleFactor * CameraDistanceModifierFunction(mainCamera.transform.position.magnitude) * direction;
         }
     }
 }

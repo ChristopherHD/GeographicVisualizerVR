@@ -1,19 +1,16 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.XR.Interaction.Toolkit;
 
 public class VRControllerManager : MonoBehaviour
 {
-
+    public CameraManager cameraManager;
     public GameObject leftControllerObject;
     public GameObject rightControllerObject;
 
     // referencia: https://forum.unity.com/threads/oculus-quest-how-to-detect-a-b-x-y-button-presses.1108232/
     public InputActionReference joystickReference;
         
-    // Start is called before the first frame update
     void Start()
     {
         var inputDevices = new List<UnityEngine.XR.InputDevice>();
@@ -27,7 +24,6 @@ public class VRControllerManager : MonoBehaviour
 
     }
 
-    // Update is called once per frame
     void Update()
     {
         //Debug.Log(joystickReference.action.IsPressed());

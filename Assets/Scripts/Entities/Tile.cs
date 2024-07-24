@@ -29,7 +29,8 @@ public class Tile : MonoBehaviour {
 
     void Awake(){
 		textureLoaded = false;
-		if (_LODTesterSphere == null) _LODTesterSphere = GameObject.FindGameObjectWithTag ("GameController").GetComponent<TileLODManager> ();
+		gameObject.layer = LayerMask.NameToLayer("World");
+        if (_LODTesterSphere == null) _LODTesterSphere = GameObject.FindGameObjectWithTag ("GameController").GetComponent<TileLODManager> ();
 	}
 
 	void Start () {

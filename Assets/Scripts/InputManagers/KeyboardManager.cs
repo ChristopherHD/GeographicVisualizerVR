@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class KeyboardManager : MonoBehaviour
 {
-	void Update()
+    public CameraManager cameraManager;
+
+    void Update()
 	{
 		if (Input.GetKeyDown(KeyCode.N))
 		{

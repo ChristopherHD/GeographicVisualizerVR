@@ -19,6 +19,7 @@ public class CameraManager : MonoBehaviour {
 	public GameObject cameraPositionObject;
     public GameObject leftControllerObject;
     public GameObject rightControllerObject;
+	public GameObject UIObject;
 
     private Vector3d transformd;
 	private double heightBasedVelocity;
@@ -45,6 +46,11 @@ public class CameraManager : MonoBehaviour {
         RotateCameraObject ();
 		MoveCamera (cameraRaycastHit);
 		RotateCameraCenter (cameraRaycastHit);
+
+        /*Debug.Log("1: " + UIObject.transform.position + " ::: " + Camera.main.transform.position);
+		
+        UIObject.transform.position = Camera.main.transform.position - Camera.main.transform.position.normalized * 50;
+		Debug.Log(UIObject.transform.position + " ::: " + Camera.main.transform.position);*/
 
 		//test(cameraRaycastHit);
 	}
@@ -94,7 +100,7 @@ public class CameraManager : MonoBehaviour {
 				float y = cameraPositionObject.transform.forward.y;
 				float z = cameraPositionObject.transform.forward.z;
 				Vector3d test = new Vector3d(x, y, z);
-				transformd = test * heightBasedVelocity;
+				transformd = test * heightBasedVelocity * Time.deltaTime;
 				Vector3 test2 = new Vector3((float)transformd.x, (float)transformd.y, (float)transformd.z);
 				cameraPositionObject.transform.position += test2;
 			}
@@ -107,7 +113,7 @@ public class CameraManager : MonoBehaviour {
             if (Input.GetKey(KeyCode.S) || (joystickAction != null && joystickAction.ReadValue<Vector2>().y < -0.2f))
 			{
 				//Debug.Log("Distancia 2 : " + heightBasedVelocity);
-				cameraPositionObject.transform.position -= cameraPositionObject.transform.forward * (float)heightBasedVelocity; // (transform.position - meshObject.transform.position + transform.forward * 12.5f)
+				cameraPositionObject.transform.position -= cameraPositionObject.transform.forward * (float)heightBasedVelocity * Time.deltaTime; // (transform.position - meshObject.transform.position + transform.forward * 12.5f)
 			}
 		}
 
@@ -121,10 +127,10 @@ public class CameraManager : MonoBehaviour {
 	private void RotateCameraObject(){
 		if (Input.GetKeyDown(KeyCode.Space)) Debug.Log("Pos: " + cameraHitPosition.worldPosition + " :: " + cameraHitPosition.latitude + " :: " + cameraHitPosition.longitude);
         if (Input.GetKeyDown(KeyCode.L)) cameraPositionObject.transform.RotateAround(meshObject.transform.position, transform.up, 90);
-        if (Input.GetKey (KeyCode.A)) cameraPositionObject.transform.RotateAround (meshObject.transform.position, meshObject.transform.up, (rotationSpeed * (float)heightBasedVelocity) / 360);
-		if (Input.GetKey (KeyCode.D)) cameraPositionObject.transform.RotateAround (meshObject.transform.position, meshObject.transform.up, (-rotationSpeed * (float)heightBasedVelocity) / 360);
-		if (Input.GetKey (KeyCode.Q)) cameraPositionObject.transform.RotateAround (meshObject.transform.position, transform.right, (-rotationSpeed * (float)heightBasedVelocity) / 360);
-		if (Input.GetKey (KeyCode.E)) cameraPositionObject.transform.RotateAround (meshObject.transform.position, transform.right, (rotationSpeed * (float)heightBasedVelocity) / 360);
+        if (Input.GetKey (KeyCode.A)) cameraPositionObject.transform.RotateAround (meshObject.transform.position, meshObject.transform.up, (rotationSpeed * (float)heightBasedVelocity * Time.deltaTime) / 360);
+		if (Input.GetKey (KeyCode.D)) cameraPositionObject.transform.RotateAround (meshObject.transform.position, meshObject.transform.up, (-rotationSpeed * (float)heightBasedVelocity * Time.deltaTime) / 360);
+		if (Input.GetKey (KeyCode.Q)) cameraPositionObject.transform.RotateAround (meshObject.transform.position, transform.right, (-rotationSpeed * (float)heightBasedVelocity * Time.deltaTime) / 360);
+		if (Input.GetKey (KeyCode.E)) cameraPositionObject.transform.RotateAround (meshObject.transform.position, transform.right, (rotationSpeed * (float)heightBasedVelocity * Time.deltaTime) / 360);
 	}
 
 	private void RotateCameraCenter(RaycastHit raycastHit){

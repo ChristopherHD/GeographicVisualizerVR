@@ -17,7 +17,6 @@ public class MarkerObject : MonoBehaviour
     void Start()
     {
         if (mainCamera == null) mainCamera = Camera.main;
-
         GameObject billboardObject = new GameObject();
         billboardObject.transform.parent = this.transform;
         billboardObject.transform.localPosition = new Vector3(0, 10, 0);

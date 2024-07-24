@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
 
 public class CameraManager : MonoBehaviour {
@@ -23,7 +24,9 @@ public class CameraManager : MonoBehaviour {
 	private double heightBasedVelocity;
 
     void Start(){
-		Camera.main.nearClipPlane = 0.01f; // a 0.000001f desaparece esfera, si estamos a una distancia considerable proporcionalmente hablando
+		Application.targetFrameRate = 60;
+
+        Camera.main.nearClipPlane = 0.01f; // a 0.000001f desaparece esfera, si estamos a una distancia considerable proporcionalmente hablando
 		//transform.forward = meshObject.transform.position - transform.position;
 		cameraPositionObject.transform.forward = meshObject.transform.position - transform.position;
     }
@@ -80,9 +83,10 @@ public class CameraManager : MonoBehaviour {
 	private void MoveCamera(RaycastHit raycastHit) {
 		
 		if (raycastHit.distance > 0.25d) {
-			
-	     	//Debug.Log("Se mueve?: " + (rightControllerObject.GetComponent<ActionBasedController>().translateAnchorAction.action.ReadValue<Vector2>().y > 0.2f));
-			if (Input.GetKey(KeyCode.W) || rightControllerObject.GetComponent<ActionBasedController>().translateAnchorAction.action.ReadValue<Vector2>().y > 0.2f) {
+
+            //Debug.Log("Se mueve?: " + (rightControllerObject.GetComponent<ActionBasedController>().translateAnchorAction.action.ReadValue<Vector2>().y > 0.2f));
+			InputAction joystickAction = rightControllerObject.GetComponent<ActionBasedController>().translateAnchorAction.action;
+            if (Input.GetKey(KeyCode.W) || (joystickAction != null && joystickAction.ReadValue<Vector2>().y > 0.2f)) {
 				
 			//if (Input.GetKey(KeyCode.W)) { // && cameraDistance
 										   //Debug.Log("Distancia 1: " + heightBasedVelocity);
@@ -98,8 +102,9 @@ public class CameraManager : MonoBehaviour {
 
 		if (raycastHit.distance < 10000d)
 		{
-			//if (Input.GetKey(KeyCode.S))
-			if (Input.GetKey(KeyCode.S) || rightControllerObject.GetComponent<ActionBasedController>().translateAnchorAction.action.ReadValue<Vector2>().y < -0.2f)
+            //if (Input.GetKey(KeyCode.S))
+            InputAction joystickAction = rightControllerObject.GetComponent<ActionBasedController>().translateAnchorAction.action;
+            if (Input.GetKey(KeyCode.S) || (joystickAction != null && joystickAction.ReadValue<Vector2>().y < -0.2f))
 			{
 				//Debug.Log("Distancia 2 : " + heightBasedVelocity);
 				cameraPositionObject.transform.position -= cameraPositionObject.transform.forward * (float)heightBasedVelocity; // (transform.position - meshObject.transform.position + transform.forward * 12.5f)

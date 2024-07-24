@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -8,10 +9,12 @@ public class MouseManager : MonoBehaviour
     private Boolean buttonPressed = false;
     private Boolean buttonReleased = false;
     public Button buttonMarker;
+    public Button attributionButton;
 
     void Start()
     {
         buttonMarker.onClick.AddListener(ManageUIMarker);
+        attributionButton.onClick.AddListener(OpenAttributionLink);
     }
 
     void Update()
@@ -67,5 +70,10 @@ public class MouseManager : MonoBehaviour
             buttonPressed = true;
             buttonReleased = false;
         }
+    }
+    public void OpenAttributionLink()
+    {
+        TMP_LinkInfo linkInfo = attributionButton.transform.GetChild(0).GetComponent<TMP_Text>().textInfo.linkInfo[0];
+        Application.OpenURL(linkInfo.GetLinkID());
     }
 }

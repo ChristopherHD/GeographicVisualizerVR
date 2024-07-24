@@ -1,14 +1,22 @@
 ﻿using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using static UnityEngine.Networking.UnityWebRequest;
 
 public class WMSMapProvider : MapProvider {
 
+    public TMP_Dropdown mainLayerOption;
+    public TMP_Dropdown secondaryLayerOption;
+
     public override IEnumerator Upload(GameObject tile)
     {
         double[] BBOX = tile.GetComponent<Tile>().BBOX;
-        yield return new WaitUntil(() => pendientRequest.Count < 20);
+        string mainLayer = mainLayerOption == null ? "OSM-WMS" : mainLayerOption.options[mainLayerOption.value].text;
+        string secondaryLayer = secondaryLayerOption == null ? "None" : secondaryLayerOption.options[secondaryLayerOption.value].text;
+        secondaryLayer = secondaryLayer.Equals("None") ? "" : "," + secondaryLayer;
+
+        yield return new WaitUntil(() => pendientRequest.Count < 10);
         string requestText = serviceDomain +
             "version=1.3.0&" +
             "request=GetMap&" +
@@ -16,8 +24,8 @@ public class WMSMapProvider : MapProvider {
             "bbox=" + BBOX[0].ToString().Replace(",", ".") + "," + BBOX[1].ToString().Replace(",", ".") + "," + BBOX[2].ToString().Replace(",", ".") + "," + BBOX[3].ToString().Replace(",", ".") + "&" +
             "width=320&" +
             "height=320&" +
-            "layers=OSM-WMS&" +
-            "styles=default&" +
+            "layers=" + mainLayer + secondaryLayer + "&" +
+            "styles=default,default&" +
             "format=image/png";
         //Debug.Log(requestText);
 

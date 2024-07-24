@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using static Tile;
 
-public class LoDTesterSphere : MonoBehaviour {
+public class TileLODManager : MonoBehaviour {
 
 	private static Vector3[] currentTileChildsPosition;
     private CameraManager camera;

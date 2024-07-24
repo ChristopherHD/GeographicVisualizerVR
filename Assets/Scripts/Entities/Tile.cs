@@ -19,7 +19,7 @@ public class Tile : MonoBehaviour {
 	public float DistanceCamera;
 	public float DistanceVertex;
 
-	private static LoDTesterSphere _LODTesterSphere; 
+	private static TileLODManager _LODTesterSphere; 
 	private float vertexDistance;
 
 	public double latitudeDiff;
@@ -29,7 +29,7 @@ public class Tile : MonoBehaviour {
 
     void Awake(){
 		textureLoaded = false;
-		if (_LODTesterSphere == null) _LODTesterSphere = GameObject.FindGameObjectWithTag ("GameController").GetComponent<LoDTesterSphere> ();
+		if (_LODTesterSphere == null) _LODTesterSphere = GameObject.FindGameObjectWithTag ("GameController").GetComponent<TileLODManager> ();
 	}
 
 	void Start () {

@@ -23,8 +23,6 @@ public class MouseManager : MonoBehaviour
         if (Input.GetMouseButtonUp(0))
         {
             int layerMask = 1 << LayerMask.NameToLayer("Marker");
-            
-            Vector3 worldPoint = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
             Ray mouseClickRay = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
             bool markerImpact = Physics.Raycast(mouseClickRay, out RaycastHit raycastHit, Mathf.Infinity, layerMask);
             if (markerImpact)
@@ -43,14 +41,9 @@ public class MouseManager : MonoBehaviour
                     bool markerImpact2 = Physics.Raycast(mouseClickRay.origin, mouseClickRay.direction, out RaycastHit raycastHit2, Mathf.Infinity, worldMask);
                     if (markerImpact2)
                     {
-                        Debug.Log(raycastHit2.collider.gameObject.name);
-                        Debug.Log(raycastHit2.collider.gameObject.layer);
                         float lat = CoordUtils.GetLatitudeFromPosition(raycastHit2.point);
                         float lon = CoordUtils.GetLongitudeFromPosition(raycastHit2.point);
-                        Debug.DrawLine(mouseClickRay.direction * 100, mouseClickRay.origin, Color.red, 10);
-                        Debug.DrawRay(mouseClickRay.origin, mouseClickRay.direction * 100, Color.green,10);
-                        Debug.Log(lon + " :: " +  lat);
-                        Marker marker = new(lat, lon);
+                        new Marker(lat, lon);
                         buttonPressed = false;
                     }
                 }

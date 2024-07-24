@@ -2529,8 +2529,8 @@ MonoBehaviour:
   cameraManager: {fileID: 0}
   leftControllerObject: {fileID: 1937998402}
   rightControllerObject: {fileID: 1196007835}
-  joystickReference: {fileID: 7904272356298805229, guid: c348712bda248c246b8c49b3db54643f,
-    type: 3}
+  keyAPressed: {fileID: 0}
+  buttonMarker: {fileID: 0}
 --- !u!114 &1133497379
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3642,28 +3642,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1229077080}
-  - component: {fileID: 1229077079}
+  - component: {fileID: 1229077081}
   m_Layer: 0
-  m_Name: MouseManager
+  m_Name: VRControllersManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1229077079
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1229077078}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52b3f7af473c9ae4c808d14959a31a60, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  buttonMarker: {fileID: 1640668179}
-  attributionButton: {fileID: 821915493}
 --- !u!4 &1229077080
 Transform:
   m_ObjectHideFlags: 0
@@ -3679,6 +3665,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1938252941}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1229077081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1229077078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdab6eefec7539c4fb6966dd6ec29cfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraManager: {fileID: 1133497379}
+  leftControllerObject: {fileID: 1937998402}
+  rightControllerObject: {fileID: 1196007835}
+  keyAPressed: {fileID: -6131295136447488360, guid: c348712bda248c246b8c49b3db54643f,
+    type: 3}
+  buttonMarker: {fileID: 1640668179}
 --- !u!1 &1237679426
 GameObject:
   m_ObjectHideFlags: 0
@@ -4248,7 +4252,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 87.529785, y: 34.01535}
+  m_AnchoredPosition: {x: 87.52979, y: 34.01535}
   m_SizeDelta: {x: 155.5073, y: 50.4325}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1640668179
@@ -6396,7 +6400,7 @@ Transform:
   m_GameObject: {fileID: 2006255891}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3031.7664, y: -4352.0234, z: -1525.7642}
+  m_LocalPosition: {x: -3031.766, y: -4352.023, z: -1525.764}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6557,7 +6561,7 @@ Transform:
   m_GameObject: {fileID: 2103065178}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3031.7664, y: -4352.0234, z: -1525.7642}
+  m_LocalPosition: {x: -3031.766, y: -4352.023, z: -1525.764}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

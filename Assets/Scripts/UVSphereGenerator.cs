@@ -144,18 +144,6 @@ public class UVSphereGenerator : MonoBehaviour
 			}
 		}
 
-		/*Debug.Log(count);
-		for (int i = 0; i < tilesVertices.Count; i++)
-		{
-			foreach (Vector3 pos in tilesVertices[i])
-            {
-                GameObject vertex = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                //asd.name = ":: " + tileRow + "::" + tileColumn;
-                vertex.transform.localScale *= 60;
-                vertex.transform.position = pos;
-            }
-        }*/
-
 		foreach (int key in tilesVertices.Keys)
 		{
             Debug.Log(tilesVertices.GetValueOrDefault(key).Count);
@@ -345,17 +333,13 @@ public class UVSphereGenerator : MonoBehaviour
 		}
 		#endregion
 
-		/*Vector3[] tempVertices = new Vector3[vertices.Length];
-		for (int n = 0; n < vertices.Length; n++)
-		{
-			tempVertices[n] = vertices[n];
-            //yield return new WaitForSeconds(0.005f);
-        }*/
         mesh.vertices = vertices;
         mesh.normals = normales;
         mesh.uv = uvs;
         mesh.triangles = triangles;
         mesh.RecalculateBounds();
+        CreateNorthPoleTile();
+        CreateSouthPoleTile();
         StartCoroutine(CreateMiddleTiles(0, 0, false));
 		StartCoroutine(CreateMiddleTiles(0, 1, false));
 		StartCoroutine(CreateMiddleTiles(0, 2, false));
@@ -380,14 +364,10 @@ public class UVSphereGenerator : MonoBehaviour
 		Marker marker4 = new(CoordUtils.GetLatitudeFromPosition(pos), CoordUtils.GetLongitudeFromPosition(pos));
 		Debug.Log("CheckCoord: " + CoordUtils.GetPositionFromLatitudeLongitude(CoordUtils.GetLatitudeFromPosition(pos), CoordUtils.GetLongitudeFromPosition(pos)));
 		Debug.Log(marker4.GetLat() + " :: " + marker4.GetLon());
-		//Marker marker4 = new(CoordUtils.GetLatitudeFromPosition(new Vector3(6041.34131f, 1010.0802f, -2353.47412f)), CoordUtils.GetLongitudeFromPosition(new Vector3(6041.34131f, 1010.0802f, -2353.47412f)));
-		//Marker marker5 = new(CoordUtils.GetLatitudeFromPosition(new Vector3(2338.03271f, 986.919739f, 6051.27783f)), CoordUtils.GetLongitudeFromPosition(new Vector3(2338.03271f, 986.919739f, 6051.27783f)));
-
+		
 		marker1.JoinMarker(marker2);
 		marker2.JoinMarker(marker3);
-		//marker4.JoinMarker(marker5);
 	}
-
 	IEnumerator CreateMiddleTiles(int latTile, int longTile, bool debug)
 	{
 		GameObject middleTile = new GameObject("MiddleTile" + latTile + "_" + longTile);
@@ -395,7 +375,6 @@ public class UVSphereGenerator : MonoBehaviour
 		mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 		Vector3[] meshVertices = mesh.vertices;
 
-		//float latValue = 90 * (numberLat - 1) / (numberLat + 2);
 		middleTile.AddComponent<Tile>();
 		middleTile.AddComponent<HeightMapData>();
 		middleTile.GetComponent<Tile>().isSphere = true;
@@ -410,7 +389,7 @@ public class UVSphereGenerator : MonoBehaviour
 		middleTile.GetComponent<MeshRenderer>().material = GetComponent<MeshRenderer>().material;
 		Mesh middleMesh = middleTile.GetComponent<MeshFilter>().mesh;
 
-		Vector3[] tempVertex = new Vector3[(nbLong / 4 + 1) * (nbLat / 2 + 1)];
+		Vector3[] tempVertex;
 		int initLat = latTile * nbLat / 2;
 		int initLon = longTile * nbLong / 4;
 
@@ -418,16 +397,8 @@ public class UVSphereGenerator : MonoBehaviour
 
 		for (int lat = initLat; lat < initLat + nbLat / 2 + 1; lat++)
 			for (int lon = initLon; lon <= initLon + nbLong / 4; lon++)
-			{
-                //if (debug) Debug.Log ((lon-initLon) + (lat-initLat) * (nbLong + 1));
-                //tempVertex [(lon-initLon) + (lat-initLat) * (nbLong + 1)] = mesh.vertices [lon + (lat - (latTile == 1 ? 1 : 0)) * (nbLong + 1) + 1];
-                //if (debug) Debug.Log((lat - initLat) * (nbLat / 2 - 1) + (lon - initLon));
-
-                //tempVertex[(lat - initLat) * (nbLat / 2 - 1) + (lon - initLon)] = meshVertices[lon + (lat) * (nbLong + 1) + 1];
-                //tempVertex[(lat - initLat) * (nbLat / 2 - 1) + (lon - initLon)] = meshVertices[lon + (lat) * (nbLong + 1) + 1];
                 tempVertexList.Add(meshVertices[lon + (lat) * (nbLong + 1) + 1]);
-                //tempVertex[(lat - initLat) * val1 + (lon - initLon)] = mesh.vertices[lon + (lat) * val2 + 1];
-            }
+            
 		tempVertex = tempVertexList.ToArray();
 
 		int nbFaces = nbLat / 2 * nbLong / 4;
@@ -452,40 +423,26 @@ public class UVSphereGenerator : MonoBehaviour
 			}
 		}
 
+        #region UVs
         List<Vector2> tempUvsList = new();
 		Vector2[] meshUvs = mesh.uv;
-        #region UVs
-        Vector2[] uvs = new Vector2[tempVertex.Length];
 		for (int lat = initLat; lat < initLat + nbLat / 2 + 1; lat++)
 			for (int lon = initLon; lon <= initLon + nbLong / 4; lon++)
-				//uvs[(lon-initLon) + (lat-initLat) * (nbLong + 1)] = mesh.uv[lon + (lat - (latTile == 1 ? 1 : 0)) * (nbLong + 1) + 1];
-				//uvs[(lat - initLat) * (nbLat / 2 - 1) + (lon - initLon)] = mesh.uv[lon + lat * (nbLong + 1) + 1];
 				tempUvsList.Add(meshUvs[lon + lat * (nbLong + 1) + 1]);
-		#endregion
-		uvs = tempUvsList.ToArray();
+        Vector2[] uvs = tempUvsList.ToArray();
+        #endregion
 
         #region Normales		
         Vector3[] normales = new Vector3[tempVertex.Length];
 		for (int n = 0; n < tempVertex.Length; n++) normales[n] = tempVertex[n].normalized;
 		#endregion
 
-		/*Vector3[] tempVertex2 = new Vector3[tempVertex.Length];
-		for (int k = 0; k < tempVertex.Length; k++)
-		{
-			tempVertex2[k] = tempVertex[k];
-            //yield return new WaitForSeconds (0.05f);
-        }*/
         middleMesh.vertices = tempVertex;
         middleMesh.triangles = triangles;
         middleMesh.uv = uvs;
         middleMesh.normals = normales;
         middleMesh.RecalculateBounds();
         middleTile.AddComponent<MeshCollider>();
-
-		/*Vector3 vertex00 = middleMesh.vertices[Mathf.Min(0, (UVSphereGenerator.nbLong/4 + 1) * (UVSphereGenerator.nbLat/2))];
-		Vector3 vertex01 = middleMesh.vertices[Mathf.Min((UVSphereGenerator.nbLong/4), middleMesh.vertices.Length - 1)];
-		Vector3 vertex10 = middleMesh.vertices[Mathf.Max(0, (UVSphereGenerator.nbLong/4 + 1) * (UVSphereGenerator.nbLat/2))];
-		Vector3 vertex11 = middleMesh.vertices[Mathf.Max((UVSphereGenerator.nbLong/4), middleMesh.vertices.Length - 1)];*/
 
 		float value00 = Mathf.Min(CoordUtils.GetLatitudeFromPosition(middleMesh.vertices[0]), CoordUtils.GetLatitudeFromPosition(middleMesh.vertices[^1]));
 		float value01 = Mathf.Min(CoordUtils.GetLongitudeFromPosition(middleMesh.vertices[0]), CoordUtils.GetLongitudeFromPosition(middleMesh.vertices[^1]));
@@ -498,14 +455,106 @@ public class UVSphereGenerator : MonoBehaviour
 			value11 = -tempVal;
 		}
 
-		//GeoCord.CreateText (middleMesh.vertices [0]);
 		CoordUtils.GetPositionFromLatitudeLongitude(value00, value01);
 		middleTile.GetComponent<Tile>().BBOX = new double[] { value00, value01, value10, value11 }; // ymin, xmin, ymax, xmax
 
 		yield return 0;
 	}
+    void CreateNorthPoleTile()
+    {
+        GameObject northPole = new("NorthPoleTile");
+        northPole.transform.parent = transform;
+        northPole.transform.position = transform.position;
+        northPole.AddComponent<MeshRenderer>();
+        northPole.AddComponent<MeshFilter>();
+        northPole.GetComponent<MeshRenderer>().material = GetComponent<MeshRenderer>().material;
+        Mesh mesh = GetComponent<MeshFilter>().mesh;
+        Mesh northMesh = northPole.GetComponent<MeshFilter>().mesh;
+        Vector3[] vertices = mesh.vertices;
 
-	void Start()
+        #region Vertices
+        List<Vector3> poleVertices = new();
+        for (int lon = 0; lon <= nbLong; lon++) poleVertices.Add(vertices[lon + 1]);
+        for (int j = 0; j <= nbLong; j++) poleVertices.Add(vertices[vertices.Length - 2 * nbLong + j]);
+        #endregion
+
+        #region UVs
+        Vector2[] uvs = mesh.uv;
+        List<Vector2> poleUvs = new();
+        for (int lon = 0; lon <= nbLong; lon++) poleUvs.Add(uvs[lon + 1] + Vector2.right * 0.5f);
+        for (int j = 0; j <= nbLong; j++) poleUvs.Add(uvs[vertices.Length - 2 * nbLong + j]);
+        #endregion
+
+        int[] triangles = new int[poleVertices.Count * 6];
+        int i = 0;
+        for (int lon = 0; lon < nbLong; lon++)
+        {
+            triangles[i++] = lon + 1;
+            triangles[i++] = lon;
+            triangles[i++] = lon + poleVertices.Count - nbLong - 1;
+        }
+
+        #region Normales		
+        Vector3[] normales = new Vector3[poleVertices.Count];
+        for (int n = 0; n < poleVertices.Count; n++) normales[n] = poleVertices[n].normalized;
+        #endregion
+
+        northMesh.vertices = poleVertices.ToArray();
+        northMesh.uv = poleUvs.ToArray();
+        northMesh.normals = normales;
+        northMesh.triangles = triangles;
+        northMesh.RecalculateBounds();
+        northPole.AddComponent<MeshCollider>();
+    }
+
+    void CreateSouthPoleTile()
+    {
+        GameObject southPole = new("SouthPoleTile");
+        southPole.transform.parent = transform;
+        southPole.transform.position = transform.position;
+        southPole.AddComponent<MeshRenderer>();
+        southPole.AddComponent<MeshFilter>();
+        southPole.GetComponent<MeshRenderer>().material = GetComponent<MeshRenderer>().material;
+        Mesh mesh = GetComponent<MeshFilter>().mesh;
+        Mesh southMesh = southPole.GetComponent<MeshFilter>().mesh;
+        Vector3[] vertices = mesh.vertices;
+
+        #region Vertices
+        List<Vector3> poleVertices = new();
+        for (int lon = 0; lon <= nbLong; lon++) poleVertices.Add(vertices[vertices.Length - 3 * nbLong + (lon - 2)]);
+        for (int j = 0; j <= nbLong; j++) poleVertices.Add(vertices[vertices.Length - nbLong + j - 1]);
+        #endregion
+
+        #region UVs
+        Vector2[] uvs = mesh.uv;
+        List<Vector2> poleUvs = new();
+        for (int lon = 0; lon <= nbLong; lon++) poleUvs.Add(uvs[uvs.Length - 3 * nbLong + (lon - 2)] + Vector2.right * 0.5f);
+        for (int j = 0; j <= nbLong; j++) poleUvs.Add(uvs[uvs.Length - nbLong + j - 1]);
+        #endregion
+
+        #region Normales		
+        Vector3[] normales = new Vector3[poleVertices.Count];
+        for (int n = 0; n < poleVertices.Count; n++) normales[n] = poleVertices[n].normalized;
+        #endregion
+
+        int[] triangles = new int[poleVertices.Count * 6];
+        int i = 0;
+        for (int lon = 0; lon < nbLong; lon++)
+        {
+            triangles[i++] = lon;
+            triangles[i++] = lon + 1;
+            triangles[i++] = lon + poleVertices.Count - nbLong;
+        }
+
+        southMesh.vertices = poleVertices.ToArray();
+        southMesh.uv = poleUvs.ToArray();
+        southMesh.normals = normales;
+        southMesh.triangles = triangles;
+        southMesh.RecalculateBounds();
+        southPole.AddComponent<MeshCollider>();
+    }
+
+    void Start()
 	{
 		StartCoroutine (CreateSphere());
 		//StartCoroutine(TestCreateUVSphereUV());

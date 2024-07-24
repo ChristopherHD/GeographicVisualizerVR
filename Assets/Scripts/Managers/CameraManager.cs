@@ -29,7 +29,8 @@ public class CameraManager : MonoBehaviour {
     }
 
 	void Update () {
-        Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit cameraRaycastHit, Mathf.Infinity);
+        int layerMask = 1 << LayerMask.NameToLayer("Marker");
+        Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit cameraRaycastHit, Mathf.Infinity, ~layerMask);
 		
 		cameraHitPosition.SetPosition(cameraRaycastHit.point);
 		

@@ -47,9 +47,6 @@ public class MouseManager : MonoBehaviour
                         Debug.Log(raycastHit2.collider.gameObject.layer);
                         float lat = CoordUtils.GetLatitudeFromPosition(raycastHit2.point);
                         float lon = CoordUtils.GetLongitudeFromPosition(raycastHit2.point);
-                        GameObject a = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                        a.transform.localScale = Vector3.one * 20;
-                        a.transform.position = raycastHit2.point;
                         Debug.DrawLine(mouseClickRay.direction * 100, mouseClickRay.origin, Color.red, 10);
                         Debug.DrawRay(mouseClickRay.origin, mouseClickRay.direction * 100, Color.green,10);
                         Debug.Log(lon + " :: " +  lat);

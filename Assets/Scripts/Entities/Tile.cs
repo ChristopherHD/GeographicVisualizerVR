@@ -43,22 +43,16 @@ public class Tile : MonoBehaviour {
 
 		vertexDistance = (meshCached.vertices[0] - meshCached.vertices[1]).magnitude / 2;
 		centerPoint = new MapPosition();
-		//centerPoint.longitude = (BBOX[3] + BBOX[1]) / 2d;
-		//centerPoint.latitude = (BBOX[2] + BBOX[0]) / 2d;
-		//Debug.Log(centerPoint.longitude + " : " + centerPoint.latitude + " : " + new Vector3d((GetVertexPosition(VertexType.DownLeft) + GetVertexPosition(VertexType.DownRight) +
-		//	GetVertexPosition(VertexType.UpperLeft) + GetVertexPosition(VertexType.UpperRight)) / 4));
 		centerPoint.worldPosition = new Vector3d((GetVertexPosition(VertexType.DownLeft) + GetVertexPosition(VertexType.DownRight) +
 			GetVertexPosition(VertexType.UpperLeft) + GetVertexPosition(VertexType.UpperRight)) / 4);
-        centerPoint.longitude = CoordUtils.GetLongitudeFromPosition((GetVertexPosition(VertexType.DownLeft) + GetVertexPosition(VertexType.DownRight) +
-			GetVertexPosition(VertexType.UpperLeft) + GetVertexPosition(VertexType.UpperRight)) / 4);
-		centerPoint.latitude = CoordUtils.GetLatitudeFromPosition((GetVertexPosition(VertexType.DownLeft) + GetVertexPosition(VertexType.DownRight) +
-			GetVertexPosition(VertexType.UpperLeft) + GetVertexPosition(VertexType.UpperRight)) / 4);
+        centerPoint.longitude = CoordUtils.GetLongitudeFromPosition(centerPoint.worldPosition);
+		centerPoint.latitude = CoordUtils.GetLatitudeFromPosition(centerPoint.worldPosition);
 
-		/*centerPoint.longitude = (BBOX[2] - BBOX[0]) / 2f;
-		centerPoint.latitude = (BBOX[3] - BBOX[1]) / 2f;*/
+        /*centerPoint.longitude = (BBOX[2] - BBOX[0]) / 2f;
+		centerPoint.latitude = (BBOX[3] - BBOX[1]) / 2f;
+		centerPoint.worldPosition = GeoCord.GetPositionFromLatitudeLongitude(centerPoint.longitude, centerPoint.latitude);*/
 
-		//centerPoint.worldPosition = GeoCord.GetPositionFromLatitudeLongitude(centerPoint.longitude, centerPoint.latitude);
-		StartCoroutine (CheckLoD ());
+        StartCoroutine(CheckLoD ());
 		//BBOX = new float[4];
 		//GameObject.FindGameObjectWithTag("GameController").GetComponent<MapProvider>().SetTexture(gameObject, BBOX);
 	}

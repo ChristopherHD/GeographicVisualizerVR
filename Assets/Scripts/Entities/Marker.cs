@@ -117,7 +117,7 @@ public class Marker
         // --- Haversine
         // double diffLat = radianLat2 - radianLat1;
         // double chordLengthSquared = Pow(Sin(diffLat / 2), 2) + Cos(this.lat) * Cos(marker.lat) * Pow(Sin(diffLon / 2), 2);
-        // double chordLength = 2 * Asin(Sqrt(a));
+        // double chordLength = 2 * Asin(Sqrt(chordLengthSquared));
 
         // --- Vincenty
         double chordLength = Atan2(Sqrt(Pow(Cos(radianLat2) * Sin(diffLon), 2)

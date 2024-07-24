@@ -9,10 +9,12 @@ using static Tile;
 public class LoDTesterSphere : MonoBehaviour {
 
 	private static Vector3[] currentTileChildsPosition;
+    private CameraManager camera;
 
-	void Start(){
+    void Start(){
 		currentTileChildsPosition = new Vector3[4]{Vector3.zero, Vector3.zero, Vector3.zero, Vector3.zero};
-	}
+        camera = Camera.main.GetComponent<CameraManager>();
+    }
 
 	IEnumerator WaitingChildTexturized(Tile tile){
 		yield return 0;
@@ -38,9 +40,8 @@ public class LoDTesterSphere : MonoBehaviour {
 		if (tile.isDivided) return false;
 		if (tile.centerPoint == null) return false;
 		if (tile.LoD >= 18) return false;
-		CameraManager camera = Camera.main.GetComponent<CameraManager>();
 
-        double tileLongDif = tile.BBOX[3] - tile.BBOX[1]; // TODO, central tile calculates its position like this, but it returns a wrong value
+        double tileLongDif = tile.BBOX[3] - tile.BBOX[1];
 		double tileLatDif = tile.BBOX[2] - tile.BBOX[0];
 		//double tileLatDif = Vector3d.Distance(tile.GetVertexPositiond(Tile.VertexType.DownLeft), tile.GetVertexPositiond(Tile.VertexType.UpperLeft));
 		double longitudeBonus = tileLongDif * 1.5d;
@@ -112,7 +113,7 @@ public class LoDTesterSphere : MonoBehaviour {
                     child.GetComponent<MeshRenderer>().material.mainTexture = null;
                     child.name = "Tile" + tileObject.name.Substring(tileObject.name.Length - 1) + (child.GetComponent<Tile>().LoD + 1) + "_" + i;
 
-					child.GetComponent<MeshFilter>().mesh = CreateSphericalMeshTest(child, i % 2, i < 2 ? 0 : 1);
+					child.GetComponent<MeshFilter>().mesh = DivideTile(child, i % 2, i < 2 ? 0 : 1);
 
 					switch (i)
 					{
@@ -165,23 +166,14 @@ public class LoDTesterSphere : MonoBehaviour {
 		return true;
 	}
 
-    private Mesh CreateSphericalMeshTest(GameObject tile, int xTile, int yTile)
+    private Mesh DivideTile(GameObject tile, int xTile, int yTile)
     {
         Mesh resultMesh = new Mesh();
         Mesh tileMesh = tile.GetComponent<MeshFilter>().mesh;
         Vector3[] tileMeshVertices = tileMesh.vertices;
         Vector3[] vertices = new Vector3[tileMeshVertices.Length];
 
-        GameObject worldObject = GameObject.FindWithTag("Player");
-        Matrix4x4 localToWorld = worldObject.transform.localToWorldMatrix;
-
-        //worldObject.transform.Inver
-        for (int i = 0; i < tileMeshVertices.Length; ++i)
-        {
-            //tileMeshVertices[i] = worldObject.transform.TransformPoint(tileMeshVertices[i]);
-            //tileMeshVertices[i] = localToWorld.MultiplyPoint3x4(tileMeshVertices[i]);
-        }
-
+        List<Vector3> verticesTest = new();
         for (int i = 0; i <= UVSphereGenerator.nbLat / 4; i++)
         {
             int kLong = i * (UVSphereGenerator.nbLat / 2 - 1) + xTile * (UVSphereGenerator.nbLat / 4 - 1) + yTile * (UVSphereGenerator.nbLong / 4 + 1) * (UVSphereGenerator.nbLat / 4);
@@ -191,24 +183,41 @@ public class LoDTesterSphere : MonoBehaviour {
             {
                 int kLat = j;//+ yTile * (UVSphereGenerator.nbLat + 1);
                 vertices[2 * (val + j)] = tileMeshVertices[kLong + kLat];
+                //verticesTest.Add(tileMeshVertices[kLong + kLat]);
 
                 if (i != UVSphereGenerator.nbLat / 4) vertices[2 * (val + j) + (UVSphereGenerator.nbLat / 2 - 1)] = (tileMeshVertices[(UVSphereGenerator.nbLat / 2 - 1) + kLong + kLat] + tileMeshVertices[kLong + kLat]) / 2;
+                //if (i != UVSphereGenerator.nbLat / 4) verticesTest.Add((tileMeshVertices[(UVSphereGenerator.nbLat / 2 - 1) + kLong + kLat] + tileMeshVertices[kLong + kLat]) / 2);
 
                 if (j != UVSphereGenerator.nbLong / 8) vertices[2 * (val + j) + 1] = (tileMeshVertices[kLong + kLat + 1] + tileMeshVertices[kLong + kLat]) / 2;
+                //if (j != UVSphereGenerator.nbLong / 8) verticesTest.Add((tileMeshVertices[kLong + kLat + 1] + tileMeshVertices[kLong + kLat]) / 2);
 
                 if (i != UVSphereGenerator.nbLat / 4 && j != UVSphereGenerator.nbLong / 8) vertices[2 * (val + j) + (UVSphereGenerator.nbLat / 2)] = ((tileMeshVertices[(UVSphereGenerator.nbLat / 2 - 1) + kLong + kLat + 1] + tileMeshVertices[kLong + j]) / 2 + (tileMeshVertices[(UVSphereGenerator.nbLat / 2 - 1) + kLong + kLat] + tileMeshVertices[kLong + kLat + 1]) / 2) / 2;
+                //if (i != UVSphereGenerator.nbLat / 4 && j != UVSphereGenerator.nbLong / 8) verticesTest.Add(((tileMeshVertices[(UVSphereGenerator.nbLat / 2 - 1) + kLong + kLat + 1] + tileMeshVertices[kLong + j]) / 2 + (tileMeshVertices[(UVSphereGenerator.nbLat / 2 - 1) + kLong + kLat] + tileMeshVertices[kLong + kLat + 1]) / 2) / 2);
 
             }
         }
 
+        // vertices should recalculate its position to adapt to the sphere and really increase level of detail
+        /*for (int i = 0; i < vertices.Length; i++)
+        {
+            float lat = CoordUtils.GetLatitudeFromPosition(vertices[i]);
+            float lon = CoordUtils.GetLongitudeFromPosition(vertices[i]);
+            Vector3d pos3d= CoordUtils.GetPositionFromLatitudeLongitude(Double.Parse(lat.ToString()), Double.Parse(lon.ToString()));
+            vertices[i] = new Vector3((float)pos3d.x, (float)pos3d.y, (float)pos3d.z);
+        }*/
+        //vertices = verticesTest.ToArray();
+
         Vector2[] uv = new Vector2[vertices.Length];
+        List<Vector2> uvs = new();
         for (int vertical = 0; vertical < UVSphereGenerator.nbLat / 2 + 1; vertical++)
         {
             for (int horizontal = 0; horizontal < UVSphereGenerator.nbLong / 4 + 1; horizontal++)
             {
-                uv[vertical * (UVSphereGenerator.nbLat / 2 - 1) + horizontal] = new Vector2((float)horizontal / (UVSphereGenerator.nbLong / 4), 1f - (float)(vertical) / (UVSphereGenerator.nbLat / 2));
+                //uv[vertical * (UVSphereGenerator.nbLat / 2 - 1) + horizontal] = new Vector2((float)horizontal / (UVSphereGenerator.nbLong / 4), 1f - (float)(vertical) / (UVSphereGenerator.nbLat / 2));
+                uvs.Add(new Vector2((float)horizontal / (UVSphereGenerator.nbLong / 4), 1f - (float)(vertical) / (UVSphereGenerator.nbLat / 2)));
             }
         }
+        uv = uvs.ToArray();
 
         int[] triangles = new int[tileMesh.triangles.Length];
         int idx = 0;
@@ -236,7 +245,7 @@ public class LoDTesterSphere : MonoBehaviour {
         resultMesh.vertices = vertices;
         resultMesh.uv = uv;
         resultMesh.triangles = triangles;
-        resultMesh.normals = normales;
+        //resultMesh.normals = normales;
         return resultMesh;
     }
 

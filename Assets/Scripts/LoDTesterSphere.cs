@@ -172,8 +172,6 @@ public class LoDTesterSphere : MonoBehaviour {
         Mesh tileMesh = tile.GetComponent<MeshFilter>().mesh;
         Vector3[] tileMeshVertices = tileMesh.vertices;
         Vector3[] vertices = new Vector3[tileMeshVertices.Length];
-
-        List<Vector3> verticesTest = new();
         for (int i = 0; i <= UVSphereGenerator.nbLat / 4; i++)
         {
             int kLong = i * (UVSphereGenerator.nbLat / 2 - 1) + xTile * (UVSphereGenerator.nbLat / 4 - 1) + yTile * (UVSphereGenerator.nbLong / 4 + 1) * (UVSphereGenerator.nbLat / 4);
@@ -181,19 +179,12 @@ public class LoDTesterSphere : MonoBehaviour {
 
             for (int j = 0; j <= UVSphereGenerator.nbLong / 8; j++)
             {
-                int kLat = j;//+ yTile * (UVSphereGenerator.nbLat + 1);
+                int kLat = j;
                 vertices[2 * (val + j)] = tileMeshVertices[kLong + kLat];
-                //verticesTest.Add(tileMeshVertices[kLong + kLat]);
 
                 if (i != UVSphereGenerator.nbLat / 4) vertices[2 * (val + j) + (UVSphereGenerator.nbLat / 2 - 1)] = (tileMeshVertices[(UVSphereGenerator.nbLat / 2 - 1) + kLong + kLat] + tileMeshVertices[kLong + kLat]) / 2;
-                //if (i != UVSphereGenerator.nbLat / 4) verticesTest.Add((tileMeshVertices[(UVSphereGenerator.nbLat / 2 - 1) + kLong + kLat] + tileMeshVertices[kLong + kLat]) / 2);
-
                 if (j != UVSphereGenerator.nbLong / 8) vertices[2 * (val + j) + 1] = (tileMeshVertices[kLong + kLat + 1] + tileMeshVertices[kLong + kLat]) / 2;
-                //if (j != UVSphereGenerator.nbLong / 8) verticesTest.Add((tileMeshVertices[kLong + kLat + 1] + tileMeshVertices[kLong + kLat]) / 2);
-
                 if (i != UVSphereGenerator.nbLat / 4 && j != UVSphereGenerator.nbLong / 8) vertices[2 * (val + j) + (UVSphereGenerator.nbLat / 2)] = ((tileMeshVertices[(UVSphereGenerator.nbLat / 2 - 1) + kLong + kLat + 1] + tileMeshVertices[kLong + j]) / 2 + (tileMeshVertices[(UVSphereGenerator.nbLat / 2 - 1) + kLong + kLat] + tileMeshVertices[kLong + kLat + 1]) / 2) / 2;
-                //if (i != UVSphereGenerator.nbLat / 4 && j != UVSphereGenerator.nbLong / 8) verticesTest.Add(((tileMeshVertices[(UVSphereGenerator.nbLat / 2 - 1) + kLong + kLat + 1] + tileMeshVertices[kLong + j]) / 2 + (tileMeshVertices[(UVSphereGenerator.nbLat / 2 - 1) + kLong + kLat] + tileMeshVertices[kLong + kLat + 1]) / 2) / 2);
-
             }
         }
 
@@ -207,17 +198,14 @@ public class LoDTesterSphere : MonoBehaviour {
         }*/
         //vertices = verticesTest.ToArray();
 
-        Vector2[] uv = new Vector2[vertices.Length];
         List<Vector2> uvs = new();
         for (int vertical = 0; vertical < UVSphereGenerator.nbLat / 2 + 1; vertical++)
         {
             for (int horizontal = 0; horizontal < UVSphereGenerator.nbLong / 4 + 1; horizontal++)
             {
-                //uv[vertical * (UVSphereGenerator.nbLat / 2 - 1) + horizontal] = new Vector2((float)horizontal / (UVSphereGenerator.nbLong / 4), 1f - (float)(vertical) / (UVSphereGenerator.nbLat / 2));
                 uvs.Add(new Vector2((float)horizontal / (UVSphereGenerator.nbLong / 4), 1f - (float)(vertical) / (UVSphereGenerator.nbLat / 2)));
             }
         }
-        uv = uvs.ToArray();
 
         int[] triangles = new int[tileMesh.triangles.Length];
         int idx = 0;
@@ -243,94 +231,10 @@ public class LoDTesterSphere : MonoBehaviour {
         #endregion
 
         resultMesh.vertices = vertices;
-        resultMesh.uv = uv;
-        resultMesh.triangles = triangles;
-        //resultMesh.normals = normales;
-        return resultMesh;
-    }
-
-    private Mesh CreateSphericalMeshTestNew(GameObject tile, int xTile, int yTile)
-    {
-        Mesh resultMesh = new Mesh();
-        Mesh tileMesh = tile.GetComponent<MeshFilter>().mesh;
-        Vector3[] tileMeshVertices = tileMesh.vertices;
-        Vector3[] vertices = new Vector3[tileMeshVertices.Length];
-
-        GameObject worldObject = GameObject.FindWithTag("Player");
-        Matrix4x4 localToWorld = worldObject.transform.localToWorldMatrix;
-        //worldObject.transform.Inver
-        for (int i = 0; i < tileMeshVertices.Length; ++i)
-        {
-            //tileMeshVertices[i] = worldObject.transform.TransformPoint(tileMeshVertices[i]);
-            //tileMeshVertices[i] = localToWorld.MultiplyPoint3x4(tileMeshVertices[i]);
-        }
-
-        int latitude = UVSphereGenerator.nbLat + 1;
-
-        int latitudeSegmentsNoPoles = latitude - 2 * (UVSphereGenerator.polesLatitudeTilesStatic + 1) + 2; // we want to ignore polar borders for tiles, except for lat=0, that's the reason of the +1 at the end, and each polarLatitudeTile has one additional vertices layer than specified (1 tile are 2 vertices of latitude), and we remove that from both poles
-        int latitudesPerTile = (latitudeSegmentsNoPoles + (UVSphereGenerator.latitudeTileDivisionsStatic - 1)) / UVSphereGenerator.latitudeTileDivisionsStatic;
-
-		int longitudesPerTile = UVSphereGenerator.nbLong / UVSphereGenerator.longitudeTileDivisionsStatic;
-
-		Debug.Log("::::::::::::: " + latitudesPerTile);
-
-        for (int i = 0; i < latitudesPerTile; i++)
-        {
-           // int kLong = i * (latitude / 2 - 1) + xTile * (latitude / 4 - 1) + yTile * (latitude / 4 + 1) * (latitude / 4);
-           // int val = i * (latitude / 2 - 1);
-
-            for (int j = 0; j <= UVSphereGenerator.nbLong / longitudesPerTile; j++)
-            {
-                vertices[2 * (j + i * longitudesPerTile)] = tileMeshVertices[i];
-				//vertices[2 * (latitude + j)]
-                /*int kLat = j;//+ yTile * (UVSphereGenerator.nbLat + 1);
-                vertices[2 * (val + j)] = tileMeshVertices[kLong + kLat];
-
-                if (i != latitude / 4) vertices[2 * (val + j) + (latitude / 2 - 1)] = (tileMeshVertices[(latitude / 2 - 1) + kLong + kLat] + tileMeshVertices[kLong + kLat]) / 2;
-
-                if (j != UVSphereGenerator.nbLong / 8) vertices[2 * (val + j) + 1] = (tileMeshVertices[kLong + kLat + 1] + tileMeshVertices[kLong + kLat]) / 2;
-
-                if (i != latitude / 4 && j != UVSphereGenerator.nbLong / 8) vertices[2 * (val + j) + (latitude / 2)] = ((tileMeshVertices[(latitude / 2 - 1) + kLong + kLat + 1] + tileMeshVertices[kLong + j]) / 2 + (tileMeshVertices[(latitude / 2 - 1) + kLong + kLat] + tileMeshVertices[kLong + kLat + 1]) / 2) / 2;
-				*/
-            }
-        }
-
-        Vector2[] uv = new Vector2[vertices.Length];
-        for (int vertical = 0; vertical < latitude / 2 + 1; vertical++)
-        {
-            for (int horizontal = 0; horizontal < UVSphereGenerator.nbLong / 4 + 1; horizontal++)
-            {
-                uv[vertical * (latitude / 2 - 1) + horizontal] = new Vector2((float)horizontal / (UVSphereGenerator.nbLong / 4), 1f - (float)(vertical) / (latitude / 2));
-            }
-        }
-
-        int[] triangles = new int[tileMesh.triangles.Length];
-        int idx = 0;
-        for (int lat = 0; lat < latitude / 2; lat++)
-        {
-            for (int lon = 0; lon <= UVSphereGenerator.nbLong / 4 - 1; lon++)
-            {
-                int current = lon + lat * (UVSphereGenerator.nbLong / 4 + 1);
-                int next = current + latitude / 2 - 1;
-                triangles[idx++] = current;
-                triangles[idx++] = current + 1;
-                triangles[idx++] = next + 1;
-
-                triangles[idx++] = current;
-                triangles[idx++] = next + 1;
-                triangles[idx++] = next;
-            }
-        }
-
-        #region Normales		
-        Vector3[] normales = new Vector3[vertices.Length];
-        for (int n = 0; n < vertices.Length; n++) normales[n] = vertices[n].normalized;
-        #endregion
-
-        resultMesh.vertices = vertices;
-        resultMesh.uv = uv;
+        resultMesh.uv = uvs.ToArray();
         resultMesh.triangles = triangles;
         resultMesh.normals = normales;
         return resultMesh;
     }
+
 }

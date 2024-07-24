@@ -1,10 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.UIElements;
-using static UnityEditor.PlayerSettings;
 
 public class UVSphereGenerator : MonoBehaviour
 {
@@ -43,8 +40,9 @@ public class UVSphereGenerator : MonoBehaviour
 		MeshFilter meshFilter = GetComponent<MeshFilter>();
 		Mesh mesh = new Mesh();
 		meshFilter.mesh = mesh;
+        //mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
-		List<Vector3> vertices = new List<Vector3>();
+        List<Vector3> vertices = new List<Vector3>();
 		List<Vector2> uvs = new List<Vector2>();
 		List<int> triangles = new List<int>();
 
@@ -347,18 +345,18 @@ public class UVSphereGenerator : MonoBehaviour
 		}
 		#endregion
 
-		Vector3[] tempVertices = new Vector3[vertices.Length];
+		/*Vector3[] tempVertices = new Vector3[vertices.Length];
 		for (int n = 0; n < vertices.Length; n++)
 		{
 			tempVertices[n] = vertices[n];
-			mesh.vertices = tempVertices;
-			mesh.normals = normales;
-			mesh.uv = uvs;
-			mesh.triangles = triangles;
-			mesh.RecalculateBounds();
-			//yield return new WaitForSeconds(0.005f);
-		}
-		StartCoroutine(CreateMiddleTiles(0, 0, false));
+            //yield return new WaitForSeconds(0.005f);
+        }*/
+        mesh.vertices = vertices;
+        mesh.normals = normales;
+        mesh.uv = uvs;
+        mesh.triangles = triangles;
+        mesh.RecalculateBounds();
+        StartCoroutine(CreateMiddleTiles(0, 0, false));
 		StartCoroutine(CreateMiddleTiles(0, 1, false));
 		StartCoroutine(CreateMiddleTiles(0, 2, false));
 		StartCoroutine(CreateMiddleTiles(0, 3, false));
@@ -394,6 +392,8 @@ public class UVSphereGenerator : MonoBehaviour
 	{
 		GameObject middleTile = new GameObject("MiddleTile" + latTile + "_" + longTile);
 		Mesh mesh = GetComponent<MeshFilter>().mesh;
+		mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+		Vector3[] meshVertices = mesh.vertices;
 
 		//float latValue = 90 * (numberLat - 1) / (numberLat + 2);
 		middleTile.AddComponent<Tile>();
@@ -414,14 +414,21 @@ public class UVSphereGenerator : MonoBehaviour
 		int initLat = latTile * nbLat / 2;
 		int initLon = longTile * nbLong / 4;
 
+		List<Vector3> tempVertexList = new();
+
 		for (int lat = initLat; lat < initLat + nbLat / 2 + 1; lat++)
 			for (int lon = initLon; lon <= initLon + nbLong / 4; lon++)
 			{
-				//if (debug) Debug.Log ((lon-initLon) + (lat-initLat) * (nbLong + 1));
-				//tempVertex [(lon-initLon) + (lat-initLat) * (nbLong + 1)] = mesh.vertices [lon + (lat - (latTile == 1 ? 1 : 0)) * (nbLong + 1) + 1];
-				if (debug) Debug.Log((lat - initLat) * (nbLat / 2 - 1) + (lon - initLon));
-				tempVertex[(lat - initLat) * (nbLat / 2 - 1) + (lon - initLon)] = mesh.vertices[lon + (lat) * (nbLong + 1) + 1];
-			}
+                //if (debug) Debug.Log ((lon-initLon) + (lat-initLat) * (nbLong + 1));
+                //tempVertex [(lon-initLon) + (lat-initLat) * (nbLong + 1)] = mesh.vertices [lon + (lat - (latTile == 1 ? 1 : 0)) * (nbLong + 1) + 1];
+                //if (debug) Debug.Log((lat - initLat) * (nbLat / 2 - 1) + (lon - initLon));
+
+                //tempVertex[(lat - initLat) * (nbLat / 2 - 1) + (lon - initLon)] = meshVertices[lon + (lat) * (nbLong + 1) + 1];
+                //tempVertex[(lat - initLat) * (nbLat / 2 - 1) + (lon - initLon)] = meshVertices[lon + (lat) * (nbLong + 1) + 1];
+                tempVertexList.Add(meshVertices[lon + (lat) * (nbLong + 1) + 1]);
+                //tempVertex[(lat - initLat) * val1 + (lon - initLon)] = mesh.vertices[lon + (lat) * val2 + 1];
+            }
+		tempVertex = tempVertexList.ToArray();
 
 		int nbFaces = nbLat / 2 * nbLong / 4;
 		int nbTriangles = nbFaces * 2;
@@ -445,41 +452,45 @@ public class UVSphereGenerator : MonoBehaviour
 			}
 		}
 
-		#region UVs
-		Vector2[] uvs = new Vector2[tempVertex.Length];
+        List<Vector2> tempUvsList = new();
+		Vector2[] meshUvs = mesh.uv;
+        #region UVs
+        Vector2[] uvs = new Vector2[tempVertex.Length];
 		for (int lat = initLat; lat < initLat + nbLat / 2 + 1; lat++)
 			for (int lon = initLon; lon <= initLon + nbLong / 4; lon++)
 				//uvs[(lon-initLon) + (lat-initLat) * (nbLong + 1)] = mesh.uv[lon + (lat - (latTile == 1 ? 1 : 0)) * (nbLong + 1) + 1];
-				uvs[(lat - initLat) * (nbLat / 2 - 1) + (lon - initLon)] = mesh.uv[lon + lat * (nbLong + 1) + 1];
+				//uvs[(lat - initLat) * (nbLat / 2 - 1) + (lon - initLon)] = mesh.uv[lon + lat * (nbLong + 1) + 1];
+				tempUvsList.Add(meshUvs[lon + lat * (nbLong + 1) + 1]);
 		#endregion
+		uvs = tempUvsList.ToArray();
 
-		#region Normales		
-		Vector3[] normales = new Vector3[tempVertex.Length];
+        #region Normales		
+        Vector3[] normales = new Vector3[tempVertex.Length];
 		for (int n = 0; n < tempVertex.Length; n++) normales[n] = tempVertex[n].normalized;
 		#endregion
 
-		Vector3[] tempVertex2 = new Vector3[tempVertex.Length];
+		/*Vector3[] tempVertex2 = new Vector3[tempVertex.Length];
 		for (int k = 0; k < tempVertex.Length; k++)
 		{
 			tempVertex2[k] = tempVertex[k];
-			middleMesh.vertices = tempVertex2;
-			middleMesh.triangles = triangles;
-			middleMesh.uv = uvs;
-			middleMesh.normals = normales;
-			middleMesh.RecalculateBounds();
-			//yield return new WaitForSeconds (0.05f);
-		}
-		middleTile.AddComponent<MeshCollider>();
+            //yield return new WaitForSeconds (0.05f);
+        }*/
+        middleMesh.vertices = tempVertex;
+        middleMesh.triangles = triangles;
+        middleMesh.uv = uvs;
+        middleMesh.normals = normales;
+        middleMesh.RecalculateBounds();
+        middleTile.AddComponent<MeshCollider>();
 
 		/*Vector3 vertex00 = middleMesh.vertices[Mathf.Min(0, (UVSphereGenerator.nbLong/4 + 1) * (UVSphereGenerator.nbLat/2))];
 		Vector3 vertex01 = middleMesh.vertices[Mathf.Min((UVSphereGenerator.nbLong/4), middleMesh.vertices.Length - 1)];
 		Vector3 vertex10 = middleMesh.vertices[Mathf.Max(0, (UVSphereGenerator.nbLong/4 + 1) * (UVSphereGenerator.nbLat/2))];
 		Vector3 vertex11 = middleMesh.vertices[Mathf.Max((UVSphereGenerator.nbLong/4), middleMesh.vertices.Length - 1)];*/
 
-		float value00 = Mathf.Min(CoordUtils.GetLatitudeFromPosition(middleMesh.vertices[0]), CoordUtils.GetLatitudeFromPosition(middleMesh.vertices[middleMesh.vertices.Length - 1]));
-		float value01 = Mathf.Min(CoordUtils.GetLongitudeFromPosition(middleMesh.vertices[0]), CoordUtils.GetLongitudeFromPosition(middleMesh.vertices[middleMesh.vertices.Length - 1]));
-		float value10 = Mathf.Max(CoordUtils.GetLatitudeFromPosition(middleMesh.vertices[0]), CoordUtils.GetLatitudeFromPosition(middleMesh.vertices[middleMesh.vertices.Length - 1]));
-		float value11 = Mathf.Max(CoordUtils.GetLongitudeFromPosition(middleMesh.vertices[0]), CoordUtils.GetLongitudeFromPosition(middleMesh.vertices[middleMesh.vertices.Length - 1]));
+		float value00 = Mathf.Min(CoordUtils.GetLatitudeFromPosition(middleMesh.vertices[0]), CoordUtils.GetLatitudeFromPosition(middleMesh.vertices[^1]));
+		float value01 = Mathf.Min(CoordUtils.GetLongitudeFromPosition(middleMesh.vertices[0]), CoordUtils.GetLongitudeFromPosition(middleMesh.vertices[^1]));
+		float value10 = Mathf.Max(CoordUtils.GetLatitudeFromPosition(middleMesh.vertices[0]), CoordUtils.GetLatitudeFromPosition(middleMesh.vertices[^1]));
+		float value11 = Mathf.Max(CoordUtils.GetLongitudeFromPosition(middleMesh.vertices[0]), CoordUtils.GetLongitudeFromPosition(middleMesh.vertices[^1]));
 		if (longTile == 1)
 		{ // In the limit between longitude 180 and longitude -180, always takes -180, we need a positive value for half cases
 			float tempVal = value01;
@@ -496,8 +507,8 @@ public class UVSphereGenerator : MonoBehaviour
 
 	void Start()
 	{
-		//StartCoroutine (CreateSphere());
-		StartCoroutine(TestCreateUVSphereUV());
+		StartCoroutine (CreateSphere());
+		//StartCoroutine(TestCreateUVSphereUV());
 		CreateData();
 	}
 }

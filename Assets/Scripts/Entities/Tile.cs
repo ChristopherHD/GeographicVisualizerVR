@@ -58,35 +58,6 @@ public class Tile : MonoBehaviour {
 		//GameObject.FindGameObjectWithTag("GameController").GetComponent<MapProvider>().SetTexture(gameObject, BBOX);
 	}
 
-	void Update()
-	{
-		RecalcCenterPosition();
-	}
-
-	// needed in case the globe rotates, will probably make the camera rotates instead to remove this
-	private void RecalcCenterPosition()
-	{
-		// GC high usage 
-		centerPoint.worldPosition = new Vector3d((GetVertexPosition(VertexType.DownLeft) + GetVertexPosition(VertexType.DownRight) +
-            GetVertexPosition(VertexType.UpperLeft) + GetVertexPosition(VertexType.UpperRight)) / 4);
-        GameObject worldObject = GameObject.FindWithTag("Player");
-        Matrix4x4 localToWorld = worldObject.transform.localToWorldMatrix;
-		Vector3 result = (GetVertexPosition(VertexType.DownLeft) + GetVertexPosition(VertexType.DownRight) + GetVertexPosition(VertexType.UpperLeft) + GetVertexPosition(VertexType.UpperRight)) / 4;
-        result = localToWorld.MultiplyPoint3x4(result);
-		centerPoint.longitude = CoordUtils.GetLongitudeFromPosition(result);
-		centerPoint.latitude = CoordUtils.GetLatitudeFromPosition(result);
-        /*centerPoint.longitude = GeoCord.GetLongitudeFromPosition((GetVertexPosition(VertexType.DownLeft) + GetVertexPosition(VertexType.DownRight) +
-            GetVertexPosition(VertexType.UpperLeft) + GetVertexPosition(VertexType.UpperRight)) / 4);
-        centerPoint.latitude = GeoCord.GetLatitudeFromPosition((GetVertexPosition(VertexType.DownLeft) + GetVertexPosition(VertexType.DownRight) +
-            GetVertexPosition(VertexType.UpperLeft) + GetVertexPosition(VertexType.UpperRight)) / 4);*/
-        //Vector3[] test = meshCached.vertices;
-
-        //GetVertexPosition(VertexType.DownRight);GetVertexPosition(VertexType.UpperLeft); GetVertexPosition(VertexType.UpperRight);
-        /*centerPoint.worldPosition.x = vertexPosition.x;
-        centerPoint.worldPosition.y = vertexPosition.y;
-        centerPoint.worldPosition.z = vertexPosition.z;*/
-    }
-
     public void UpdateTexture(){
 		GameObject.FindGameObjectWithTag("GameController").GetComponent<MapProvider>().SetTexture(gameObject);
 	}

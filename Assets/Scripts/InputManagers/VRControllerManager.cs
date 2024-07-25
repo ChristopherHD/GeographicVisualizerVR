@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -12,6 +13,7 @@ public class VRControllerManager : MonoBehaviour
     public GameObject rightControllerObject;
     public InputActionReference keyAPressed;
     public Button buttonMarker;
+    public GameObject worldColliderRotation;
 
     private ActionBasedController rightJoystickReference;
     private ActionBasedController leftJoystickReference;
@@ -34,39 +36,28 @@ public class VRControllerManager : MonoBehaviour
         if (rightJoystickReference.translateAnchorAction.action != null && rightJoystickReference.translateAnchorAction.action.ReadValue<Vector2>().y > 0.2f) cameraManager.MoveForward();
         if (rightJoystickReference.translateAnchorAction.action != null && rightJoystickReference.translateAnchorAction.action.ReadValue<Vector2>().y < -0.2f) cameraManager.MoveBackwards();
 
-        if (leftJoystickReference.translateAnchorAction.action != null && leftJoystickReference.translateAnchorAction.action.ReadValue<Vector2>().y > 0.2f) cameraManager.MoveForward();
-        if (leftJoystickReference.translateAnchorAction.action != null && leftJoystickReference.translateAnchorAction.action.ReadValue<Vector2>().y < -0.2f) cameraManager.MoveBackwards();
+        if (leftJoystickReference.translateAnchorAction.action != null && leftJoystickReference.translateAnchorAction.action.ReadValue<Vector2>().y < -0.2f) cameraManager.RotateCameraObject(cameraManager.gameObject.transform.right, -cameraManager.rotationSpeed);
+        if (leftJoystickReference.translateAnchorAction.action != null && leftJoystickReference.translateAnchorAction.action.ReadValue<Vector2>().y > 0.2f) cameraManager.RotateCameraObject(cameraManager.gameObject.transform.right, cameraManager.rotationSpeed);
+        if (leftJoystickReference.rotateAnchorAction.action != null && leftJoystickReference.rotateAnchorAction.action.ReadValue<Vector2>().x > 0.2f) cameraManager.RotateCameraObject(cameraManager.meshObject.transform.up, -cameraManager.rotationSpeed);
+        if (leftJoystickReference.rotateAnchorAction.action != null && leftJoystickReference.rotateAnchorAction.action.ReadValue<Vector2>().x < -0.2f) cameraManager.RotateCameraObject(cameraManager.meshObject.transform.up, cameraManager.rotationSpeed);
 
-        float raycastDistance = (rightRaycast.rayEndPoint - Camera.main.transform.position).magnitude;
-        if (raycastDistance < 25000)
+        float raycastDistanceRight = (rightRaycast.rayEndPoint - Camera.main.transform.position).magnitude;
+        if (raycastDistanceRight < 25000)
         {
-            CheckTriggerAddMarker(rightRaycast.rayEndPoint, rightRaycast.gameObject);
+            CheckTriggerAddMarker(rightJoystickReference, rightRaycast.rayEndPoint, rightRaycast.gameObject);
         }
-        /*if (Input.GetKeyDown(KeyCode.JoystickButton0)) //(Input.GetKeyUp(KeyCode.JoystickButton0)) // A --> only works in first click
+        float raycastDistanceLeft = (leftRaycast.rayEndPoint - Camera.main.transform.position).magnitude;
+        if (raycastDistanceLeft < 25000)
         {
-            Debug.Log("A");
-            Vector3 markerPosition = rightRaycast.rayEndPoint;
-            float lat = CoordUtils.GetLatitudeFromPosition(markerPosition);
-            float lon = CoordUtils.GetLongitudeFromPosition(markerPosition);
-            new Marker(lat, lon);
+            CheckTriggerAddMarker(leftJoystickReference, leftRaycast.rayEndPoint, leftRaycast.gameObject);
         }
-        if (Input.GetKeyDown(KeyCode.JoystickButton1)) // B
-        {
-            Debug.Log("B");
-        }
-        if (Input.GetKeyDown(KeyCode.JoystickButton2)) // X
-        {
-            Debug.Log("X");
-        }
-        if (Input.GetKeyDown(KeyCode.JoystickButton3)) // Y
-        {
-            Debug.Log("Y");
-        }*/
+
+        cameraManager.cameraPositionObject.transform.RotateAround(cameraManager.meshObject.transform.position, transform.up, worldColliderRotation.transform.rotation.y);
     }
 
-    private void CheckTriggerAddMarker(Vector3 hitPosition, GameObject gameObject)
+    private void CheckTriggerAddMarker(ActionBasedController controller, Vector3 hitPosition, GameObject gameObject)
     {
-        if (rightJoystickReference.activateAction.action.IsPressed())
+        if (controller.activateAction.action.IsPressed())
         {
             /*int layerMask = 1 << LayerMask.NameToLayer("Marker");
             if (gameObject.layer == layerMask)
@@ -94,7 +85,6 @@ public class VRControllerManager : MonoBehaviour
 
     public void ManageUIMarker()
     {
-        Debug.Log("1");
         if (!buttonPressed)
         {
             buttonPressed = true;

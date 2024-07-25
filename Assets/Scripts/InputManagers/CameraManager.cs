@@ -24,7 +24,7 @@ public class CameraManager : MonoBehaviour {
 	private double heightBasedVelocity;
 
     void Start(){
-		Application.targetFrameRate = 60;
+		//Application.targetFrameRate = 60;
 
         Camera.main.nearClipPlane = 0.01f; // a 0.000001f desaparece esfera, si estamos a una distancia considerable proporcionalmente hablando
 		//transform.forward = meshObject.transform.position - transform.position;

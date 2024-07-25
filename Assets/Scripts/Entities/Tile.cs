@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Newtonsoft.Json.Linq;
+using System.Collections;
 using UnityEngine;
 
 public class Tile : MonoBehaviour {
@@ -26,6 +27,8 @@ public class Tile : MonoBehaviour {
 
 	private int attempts = 0;
 	private Vector3[] cachedMeshCornerVertices;
+	WaitUntil waitUntil;
+	WaitForSeconds waitSeconds;
 
     void Awake(){
 		textureLoaded = false;
@@ -49,10 +52,12 @@ public class Tile : MonoBehaviour {
         centerPoint.longitude = CoordUtils.GetLongitudeFromPosition(centerPoint.worldPosition);
 		centerPoint.latitude = CoordUtils.GetLatitudeFromPosition(centerPoint.worldPosition);
 
-        /*centerPoint.longitude = (BBOX[2] - BBOX[0]) / 2f;
+		/*centerPoint.longitude = (BBOX[2] - BBOX[0]) / 2f;
 		centerPoint.latitude = (BBOX[3] - BBOX[1]) / 2f;
 		centerPoint.worldPosition = GeoCord.GetPositionFromLatitudeLongitude(centerPoint.longitude, centerPoint.latitude);*/
-
+		
+		waitUntil = new WaitUntil(() => (textureLoaded || (transform.parent != null && transform.parent.childCount != 4 && transform.parent.childCount != 0)));
+		waitSeconds = new WaitForSeconds(1f);
         StartCoroutine(CheckLoD ());
 		//BBOX = new float[4];
 		//GameObject.FindGameObjectWithTag("GameController").GetComponent<MapProvider>().SetTexture(gameObject, BBOX);
@@ -164,10 +169,8 @@ public class Tile : MonoBehaviour {
 		//Debug.Log("ShouldDivide: " + _LODTesterSphere.ShouldDivide(this, true));
 	}
 	#endif
-
-
-	IEnumerator CheckLoD(){
-		yield return new WaitUntil(() => (textureLoaded || (transform.parent != null && transform.parent.childCount != 4 && transform.parent.childCount != 0)));
+    IEnumerator CheckLoD(){
+		yield return waitUntil;
 		if (isSphere) {
 			if (transform.parent.parent.parent != null && transform.parent.childCount != 4 && transform.parent.childCount != 0) { 
 				mustBeDestroyed = true;
@@ -189,7 +192,7 @@ public class Tile : MonoBehaviour {
 				_LODTesterSphere.CheckLoD (transform);
 			}
 			
-			yield return new WaitForSeconds (0.5f);
+			yield return waitSeconds;
 			if (!mustBeDestroyed) {
 				StartCoroutine (CheckLoD ());
 			} else {

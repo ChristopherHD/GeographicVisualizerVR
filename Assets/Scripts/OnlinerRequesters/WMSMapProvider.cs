@@ -16,7 +16,7 @@ public class WMSMapProvider : MapProvider {
         string secondaryLayer = secondaryLayerOption == null ? "None" : secondaryLayerOption.options[secondaryLayerOption.value].text;
         secondaryLayer = secondaryLayer.Equals("None") ? "" : "," + secondaryLayer;
 
-        yield return new WaitUntil(() => pendientRequest.Count < 10);
+        yield return new WaitUntil(() => pendientRequest.Count < 20);
         string requestText = serviceDomain +
             "version=1.3.0&" +
             "request=GetMap&" +

@@ -363,7 +363,7 @@ Transform:
   m_GameObject: {fileID: 149467769}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -4826.805, y: -4121.511, z: 317.21783}
+  m_LocalPosition: {x: -4826.805, y: -4121.511, z: 317.2178}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -732,7 +732,7 @@ GameObject:
   - component: {fileID: 438996264}
   - component: {fileID: 438996267}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1927,8 +1927,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -114, y: 7.716034}
-  m_SizeDelta: {x: 226, y: 18.832092}
+  m_AnchoredPosition: {x: -129.842, y: 19.486}
+  m_SizeDelta: {x: 257.683, y: 42.372}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &821915493
 MonoBehaviour:
@@ -2069,8 +2069,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\xA9 <#00F><u><link=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</u> 
-    </link><#000>contributors"
+  m_text: "\xA9 <#000>OpenStreetMap contributors \n<#00F>https://www.openstreetmap.org/copyright"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2547,8 +2546,6 @@ MonoBehaviour:
   rotationSpeed: 5
   forwardSpeed: 0.6
   cameraPositionObject: {fileID: 788675877}
-  leftControllerObject: {fileID: 1937998402}
-  rightControllerObject: {fileID: 1196007835}
   UIObject: {fileID: 438996262}
 --- !u!1 &1155889516
 GameObject:
@@ -4312,7 +4309,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.435849, g: 1, b: 0.48230848, a: 1}
+  m_Color: {r: 0.027450982, g: 0.6039216, b: 0.5803922, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4646,63 +4643,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1694856664}
   m_CullTransparentMesh: 1
---- !u!1001 &1702132342
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1980720458850604, guid: 2ea529d26080cf749a4482d050769c6b, type: 3}
-      propertyPath: m_Name
-      value: TestShowText
-      objectReference: {fileID: 0}
-    - target: {fileID: 1980720458850604, guid: 2ea529d26080cf749a4482d050769c6b, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1980720458850604, guid: 2ea529d26080cf749a4482d050769c6b, type: 3}
-      propertyPath: m_TagString
-      value: Untagged
-      objectReference: {fileID: 0}
-    - target: {fileID: 4408974954401268, guid: 2ea529d26080cf749a4482d050769c6b, type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4408974954401268, guid: 2ea529d26080cf749a4482d050769c6b, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.7183509
-      objectReference: {fileID: 0}
-    - target: {fileID: 4408974954401268, guid: 2ea529d26080cf749a4482d050769c6b, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.81788886
-      objectReference: {fileID: 0}
-    - target: {fileID: 4408974954401268, guid: 2ea529d26080cf749a4482d050769c6b, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 8.121355
-      objectReference: {fileID: 0}
-    - target: {fileID: 4408974954401268, guid: 2ea529d26080cf749a4482d050769c6b, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4408974954401268, guid: 2ea529d26080cf749a4482d050769c6b, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4408974954401268, guid: 2ea529d26080cf749a4482d050769c6b, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4408974954401268, guid: 2ea529d26080cf749a4482d050769c6b, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 2ea529d26080cf749a4482d050769c6b, type: 3}
 --- !u!1 &1705335597
 GameObject:
   m_ObjectHideFlags: 0
@@ -4760,7 +4700,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Add Marker
+  m_text: <#FFF>Add Marker
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -6571,7 +6511,6 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 1702132342}
   - {fileID: 601940068}
   - {fileID: 1938252941}
   - {fileID: 1184814168}

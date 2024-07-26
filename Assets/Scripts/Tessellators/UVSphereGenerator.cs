@@ -249,6 +249,7 @@ public class UVSphereGenerator : MonoBehaviour
     void CreateNorthPoleTile()
     {
         GameObject northPole = new("NorthPoleTile");
+        northPole.layer = LayerMask.NameToLayer("World");
         northPole.transform.parent = transform;
         northPole.transform.position = transform.position;
         northPole.AddComponent<MeshRenderer>();
@@ -296,6 +297,7 @@ public class UVSphereGenerator : MonoBehaviour
     void CreateSouthPoleTile()
     {
         GameObject southPole = new("SouthPoleTile");
+        southPole.layer = LayerMask.NameToLayer("World");
         southPole.transform.parent = transform;
         southPole.transform.position = transform.position;
         southPole.AddComponent<MeshRenderer>();

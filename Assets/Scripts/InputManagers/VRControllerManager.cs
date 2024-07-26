@@ -11,7 +11,6 @@ public class VRControllerManager : MonoBehaviour
     public CameraManager cameraManager;
     public GameObject leftControllerObject;
     public GameObject rightControllerObject;
-    public InputActionReference keyAPressed;
     public Button buttonMarker;
     public GameObject worldColliderRotation;
 

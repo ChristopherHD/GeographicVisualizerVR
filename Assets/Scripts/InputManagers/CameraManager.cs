@@ -17,7 +17,6 @@ public class CameraManager : MonoBehaviour {
 	public MapPosition cameraHitPosition = new MapPosition();
 	public static Boolean continued = false;
 	public GameObject cameraPositionObject;
-	public GameObject UIObject;
 
 	private RaycastHit cameraRaycastHit;
     private Vector3d transformd;

@@ -3257,7 +3257,6 @@ MonoBehaviour:
   rotationSpeed: 5
   forwardSpeed: 0.6
   cameraPositionObject: {fileID: 788675877}
-  UIObject: {fileID: 0}
 --- !u!1 &1154138092
 GameObject:
   m_ObjectHideFlags: 0

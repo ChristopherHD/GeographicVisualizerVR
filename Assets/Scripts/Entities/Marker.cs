@@ -8,11 +8,19 @@ public class Marker
     private float lon;
     private List<LineObject> joinedLines;
     private Vector3 worldPosition;
+    private Vector3 worldPositionAdjusted;
     private GameObject markerObject;
     
     private static GameObject markersContainer = GameObject.Find("Markers");
     private static GameObject linesContainer = GameObject.Find("Lines");
     private static Marker lastSelectedMarker;
+    private float scaleFactor = UVSphereGenerator.radiusStatic / 127.42f;
+
+    private static Sprite markerSprite;
+    private static Sprite markerSelectedSprite;
+    private static Texture2D textureMarker = Resources.Load<Texture2D>("Sprites/Marker");
+    private static Texture2D textureMarkerSelected = Resources.Load<Texture2D>("Sprites/Marker_select");
+    private static Material lineMaterial = Resources.Load<Material>("Sprites/Materials/Line3");
 
     public Marker(float lat, float lon)
     {
@@ -21,6 +29,8 @@ public class Marker
         joinedLines = new List<LineObject>();
         this.worldPosition = CoordUtils.GetPositionFromLatitudeLongitude(lat, lon);
         CreateWorldObject();
+        if(markerSprite == null) markerSprite = Sprite.Create(textureMarker, new Rect(0, 0, textureMarker.width, textureMarker.height), Vector2.one / 2);
+        if(markerSelectedSprite == null) markerSelectedSprite = Sprite.Create(textureMarkerSelected, new Rect(0, 0, textureMarkerSelected.width, textureMarkerSelected.height), Vector2.one / 2);
     }
 
     public void CreateWorldObject()
@@ -34,7 +44,7 @@ public class Marker
         markerObject.transform.position = this.worldPosition;
         markerObject.transform.localScale = Vector3.zero; // it'll scale inmediatly after
         SphereCollider collider = markerObject.AddComponent<SphereCollider>();
-        collider.radius = 1.3f;
+        collider.radius = 2f;
         Debug.Log(lat + " :: " + lon);
     }
 
@@ -68,10 +78,19 @@ public class Marker
         LineObject line = lineObject.AddComponent<LineObject>();
         LineRenderer lineRenderer = lineObject.AddComponent<LineRenderer>();
         lineRenderer.useWorldSpace = true;
+        lineRenderer.material = lineMaterial;
+        lineRenderer.generateLightingData = true;
+        lineRenderer.startWidth = 1.5f;
         List<Vector3> positions = new List<Vector3>();
 
         Vector3 middlePos = this.worldPosition + (marker.worldPosition - this.worldPosition) / 2;
         middlePos = CoordUtils.GetPositionFromLatitudeLongitude(CoordUtils.GetLatitudeFromPosition(middlePos), CoordUtils.GetLongitudeFromPosition(middlePos));
+
+        /*Vector3 direction = marker.GetWorldPosition().normalized;
+        int layerMask = 1 << LayerMask.NameToLayer("Marker");
+        Physics.Raycast(marker.GetWorldPosition(), -direction, out RaycastHit raycastHit, Mathf.Infinity, ~layerMask);
+        marker.setWorldPositionAdjusted(raycastHit.point);
+        positions.Add(marker.worldPositionAdjusted - direction / (scaleFactor * 5));*/
         positions.Add(marker.worldPosition);
         for (int i = 1; i < linePositions ; i++)
         {
@@ -96,6 +115,10 @@ public class Marker
 
             positions.Add(pos);
         }
+        /*Vector3 directionCurrent = this.GetWorldPosition().normalized;
+        Physics.Raycast(this.GetWorldPosition(), -directionCurrent, out RaycastHit raycastHitCurrent, Mathf.Infinity, ~layerMask);
+        this.setWorldPositionAdjusted(raycastHitCurrent.point);
+        positions.Add(this.worldPositionAdjusted - directionCurrent / (scaleFactor * 5));*/
         positions.Add(this.worldPosition);
         lineRenderer.positionCount = positions.Count;
         lineRenderer.SetPositions(positions.ToArray());
@@ -129,10 +152,10 @@ public class Marker
 
     public void Select()
     {
-        markerObject.GetComponent<SpriteRenderer>().color = Color.green;
+        markerObject.GetComponent<SpriteRenderer>().sprite = markerSelectedSprite;
         if (lastSelectedMarker != null && lastSelectedMarker != this)
         {
-            lastSelectedMarker.GetMarkerObject().GetComponent<SpriteRenderer>().color = Color.blue;
+            lastSelectedMarker.GetMarkerObject().GetComponent<SpriteRenderer>().sprite = markerSprite;
         }
         lastSelectedMarker = this;
     }
@@ -158,6 +181,11 @@ public class Marker
     public List<LineObject> GetJoinedLines()
     {
         return this.joinedLines;
+    }
+
+    public void setWorldPositionAdjusted(Vector3 position)
+    {
+        this.worldPositionAdjusted = position;
     }
     public static Marker GetLastSelectedMarker()
     {

@@ -7,8 +7,7 @@ public class MarkerObject : MonoBehaviour
     public Billboard billboard;
     public float markerScaleFactor = 1f / 85f;
 
-    private Sprite sprite;
-    private Sprite spriteCircle;
+    private Sprite markerSprite;
     private Vector3 tileRayCastHitPosition = Vector3.zero;
     private float scaleFactor = UVSphereGenerator.radiusStatic / 127.42f;
 
@@ -23,17 +22,10 @@ public class MarkerObject : MonoBehaviour
         billboard = billboardObject.AddComponent<Billboard>();
         billboardObject.AddComponent<SpriteRenderer>();
 
-        Texture2D texture = Resources.Load<Texture2D>("Sprites/9-SlicedWithBorder");
-        sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one / 2);
-        billboardObject.GetComponent<SpriteRenderer>().sprite = sprite;
-
         SpriteRenderer renderer = this.gameObject.AddComponent<SpriteRenderer>();
-        renderer.color = Color.blue;
-
-        Texture2D textureCircle = Resources.Load<Texture2D>("Sprites/Circle");
-        spriteCircle = Sprite.Create(textureCircle, new Rect(0, 0, textureCircle.width, textureCircle.height), Vector2.one / 2);
-        Debug.Log(Sprite.Create(textureCircle, new Rect(0, 0, textureCircle.width, textureCircle.height), Vector2.one / 2));
-        renderer.sprite = spriteCircle;
+        Texture2D textureMarker = Resources.Load<Texture2D>("Sprites/Marker");
+        markerSprite = Sprite.Create(textureMarker, new Rect(0, 0, textureMarker.width, textureMarker.height), Vector2.one / 2);
+        renderer.sprite = markerSprite;
     }
 
     void Update()
@@ -46,7 +38,7 @@ public class MarkerObject : MonoBehaviour
     private float CameraDistanceModifierFunction(float distance)
     {
         float value = 5 / (2 * UVSphereGenerator.radiusStatic) * distance - 5f / 2f;
-        return value < 0 ? 0 : value;
+        return value < 0 ? 0.0001f : value;
     }
     private void RecalculatePosition()
     {
@@ -55,12 +47,11 @@ public class MarkerObject : MonoBehaviour
         {
             int layerMask = 1 << LayerMask.NameToLayer("Marker");
             Physics.Raycast(this.marker.GetWorldPosition(), -direction, out RaycastHit raycastHit, Mathf.Infinity, ~layerMask);
-            //float lat = CoordUtils.GetLatitudeFromPosition(raycastHit.point);
-            //float lon = CoordUtils.GetLongitudeFromPosition(raycastHit.point);
             tileRayCastHitPosition = raycastHit.point;
+            marker.setWorldPositionAdjusted(tileRayCastHitPosition);
         } else
         {
-            this.transform.position = tileRayCastHitPosition + direction / (scaleFactor * 5) + scaleFactor * CameraDistanceModifierFunction(mainCamera.transform.position.magnitude) * direction;
+            this.transform.position = tileRayCastHitPosition + direction / (scaleFactor * 5) + 1.5f * scaleFactor * CameraDistanceModifierFunction(mainCamera.transform.position.magnitude) * direction;
         }
     }
 }

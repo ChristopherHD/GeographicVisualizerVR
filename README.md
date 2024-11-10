@@ -13,3 +13,13 @@
   This work proposes the development of a 3D virtual globe using the Unity environment, based on an initial prototype development, made during the internship, which had the characteristics of displaying different levels of detail as the user approached the globe, downloading images of the terrain using the WMS protocol, as well as allowing the generation of height maps. It was a prototype due to limitations of the software, such as being unable to reach high levels of detail (could not reach street level for example), as well as the difficulty to be used by users without technical knowledge (some camera movements were not performed smoothly, there were no indications of use, and perhaps had too many keys assigned for the management of different aspects of the camera).
     
   For this reason, it is proposed to improve such software, allowing to reach higher levels of detail, offering a more friendly user experience, allowing the visualization of georeferenced information on the globe, visualizing different layers of information, as well as the integration of all this not only in desktop devices, but also in Virtual and Augmented Reality devices.
+
+## Video samples
+
+### Desktop
+https://github.com/user-attachments/assets/abab1ac4-6d22-48e3-90a4-d8fa2645df6f
+
+### VR
+https://github.com/user-attachments/assets/0d546ac1-43a4-498f-967e-963891934655
+
+
